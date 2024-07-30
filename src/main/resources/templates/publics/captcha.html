@@ -1,0 +1,29 @@
+<div th:with="captcha=${captchaSvg.get(idCaptcha)}">
+    <div class="text-center captcha" id="captcha">
+        <svg height="50" viewBox="0,0,150,50" width="150" xmlns="http://www.w3.org/2000/svg">
+            <rect fill="#cc9966" height="100%" width="100%"></rect>
+            <path fill="none" stroke="black" th:attr="d=${captcha[0]}"/>
+            <path fill="none" stroke="black" th:attr="d=${captcha[1]}"/>
+            <path fill="none" stroke="black" th:attr="d=${captcha[2]}"/>
+            <path fill="none" stroke="black" th:attr="d=${captcha[3]}"/>
+            <!--        <path th:attr="d=${captchaSvg[0]}" stroke="black" fill="none"/>-->
+            <!--        <path th:attr="d=${captchaSvg[1]}" stroke="black" fill="none"/>-->
+            <!--        <path th:attr="d=${captchaSvg[2]}" stroke="black" fill="none"/>-->
+            <!--        <path th:attr="d=${captchaSvg[3]}" stroke="black" fill="none"/>-->
+            <path d="M18 40 C60 35,65 26,146 23" fill="none" stroke="#8edc74"></path>
+            <path d="M16 6 C78 21,63 35,138 10" fill="none" stroke="#7272ed"></path>
+            <path d="M7 27 C72 49,77 47,133 34" fill="none" stroke="#ea57ea"></path>
+            <path d="M15 27 C60 45,74 39,139 10" fill="none" stroke="#baeb88"></path>
+            <path d="M5 35 C87 11,75 12,129 30" fill="none" stroke="#5e80e8"></path>
+            <path d="M19 3 C66 34,55 25,142 29" fill="none" stroke="#734beb"></path>
+            <path d="M8 49 C93 17,86 31,138 19" fill="none" stroke="#5fa3e7"></path>
+            <path d="M11 42 C55 39,65 25,146 17" fill="none" stroke="#c769e6"></path>
+            <path d="M11 5 C73 38,92 17,131 3" fill="none" stroke="#91d54d"></path>
+        </svg>
+    </div>
+</div>
+<div class="text-center">
+    <br>
+    <input  class="text-center" type="text" name="captcha" placeholder="Nhập mã captcha" required="true"/><br>
+    <p th:if="${#fields.hasErrors('captcha')}" th:errors="*{captcha}" class="text-danger"></p>
+</div>

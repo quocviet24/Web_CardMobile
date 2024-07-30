@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tạo tài khoản</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}" />
+</head>
+
+<body>
+<div class="container-scroller d-flex">
+    <!-- partial:../../partials/_sidebar.html -->
+    <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper" style="margin-left: 16%;">
+        <!-- partial:./partials/_navbar.html -->
+        <div th:insert="../templates/pages/navbar.html"></div>
+        <div class="account-login section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+                        <div class="register-form">
+                            <h1 style="text-align: center;" class="title"><strong>Tạo loại thẻ mới</strong></h1>
+                            <!--missing id of form-->
+                            <form id="form-create" class="row" method="post" action="/cardType/create" th:object="${card}">
+                                <div class="form-group">
+                                    <label for="publisher" class="required">Tên nhà phát hành</label>
+                                    <select th:value="*{publisher_id}" class="form-control" id="publisher" name="publisher_id" required>
+                                        <option value="" disabled selected>Chọn nhà phát hành</option>
+                                        <option th:each="publisher : ${listPublisher}" th:value="${publisher.id}" th:text="${publisher.name}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="unitPrice" class="required">Số tiền</label>
+                                    <input type="text" th:field="*{unitPrice}" class="form-control" id="unitPrice" name="unitPrice">
+                                    <div id="unitPriceError" class="text-danger"></div>
+                                    <div th:if="${#fields.hasErrors('unitPrice')}" class="text-danger" th:errors="*{unitPrice}"></div>
+                                </div>
+
+                                <div th:if="${error != null}">
+                                    <p th:text="${error}" class="text-danger"></p>
+                                </div>
+
+                                <div class="button">
+                                    <button class="btn btn-outline-primary" onclick="submitForm('form-create')" type="button">Tạo loại thẻ mới</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function submitForm(formId) {
+        let publisher = document.getElementById("publisher").value;
+        let unitPrice = document.getElementById("unitPrice").value;
+        let unitPriceError = document.getElementById("unitPriceError");
+        unitPriceError.innerHTML = "";
+
+        if (publisher == '') {
+            window.alert('Vui lòng chọn nhà phát hành');
+            return;
+        }
+
+        if (unitPrice == '') {
+            unitPriceError.innerHTML = "Vui lòng nhập số tiền";
+            return;
+        }
+
+        let parsedUnitPrice = parseFloat(unitPrice);
+        if (isNaN(parsedUnitPrice)) {
+            unitPriceError.innerHTML = "Nhập chưa đúng định dạng, vui lòng nhập lại.";
+            return;
+        }
+
+        // Kiểm tra số lượng chữ số trước dấu thập phân
+        let integerPart = Math.floor(parsedUnitPrice);
+        if (integerPart.toString().length > 7) {
+            unitPriceError.innerHTML = "Nhập số tiền quá lớn, vui lòng nhập lại.";
+            return;
+        }
+
+        var form = document.getElementById(formId);
+        form.submit();
+    }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Thay đổi thông tin</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.svg" />
+
+    <!-- ========================= CSS here ========================= -->
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/LineIcons.3.0.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/tiny-slider.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/glightbox.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+
+    <style>
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #000000;
+            border-color: #000000;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Start Header Area -->
+    <header th:insert="../templates/publics/header.html"></header>
+    <!-- End Header Area -->
+
+    <!-- Start Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="breadcrumbs-content">
+                        <h1 class="page-title">Thông tin cá nhân</h1>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12">
+                    <ul class="breadcrumb-nav">
+                        <li><a href="/index"><i class="lni lni-home"></i> Trang chủ</a></li>
+                        <li><a href="/profile"><i class="lni lni-home"></i>
+                                Trang cá nhân</a></li>
+                        <li>Cập nhật</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumbs -->
+
+    <!-- Start Account Login Area -->
+    <div class="account-login section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+                    <div th:if="${session.user_sess != null}">
+                        <form id="profileUpdate-form" class="card login-form" method="post" action="/profile/update"
+                            th:object="${User}">
+                            <div class="row card-body">
+                                <div class="title">
+                                    <h3>Thông tin người dùng</h3>
+                                    <p>Đây là thông tin về bạn.</p>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="firstName-input">Tên</label>
+                                    <input class="form-control" type="text" id="firstName-input" name="firstName"
+                                        th:value="*{firstName}" required>
+                                    <p th:if="${#fields.hasErrors('firstName')}" class="text-danger"
+                                        th:errors="*{firstName}"></p>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="lastName-input">Họ</label>
+                                    <input class="form-control" type="text" id="lastName-input" th:field="*{lastName}">
+                                    <p th:if="${#fields.hasErrors('lastName')}" class="text-danger"
+                                        th:errors="*{lastName}"></p>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="phone-input">Số điện thoại</label>
+                                    <input class="form-control" type="text" id="phone-input" name="phone"
+                                        th:value="*{phone}">
+                                    <p th:if="${#fields.hasErrors('phone')}" class="text-danger" th:errors="*{phone}">
+                                    </p>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="username">Tên đăng nhập</label>
+                                    <input class="form-control" type="text" id="username" th:field="*{username}"
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <button type="submit" onclick="profileSubmit('profileUpdate-form')"
+                                        class="btn btn-primary text-center w-100" style="margin-top: 10px">
+                                        Cập nhật
+                                    </button>
+                                </div>
+                                <div class="col-sm-6">
+                                    <a class="btn btn-primary text-center w-100" style="margin-top: 10px"
+                                        th:href="@{/profile}">
+                                        Quay lại
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-sm-8 mb-2 mb-sm-0">
+                                    <input readonly class="form-control h-100" type="text"
+                                        th:attr="value=${session.user_sess.email}">
+                                </div>
+                                <div class="col-sm-4">
+                                    <a class="btn btn-primary text-center w-100 h-100"
+                                        th:href="@{/profile/confirmPass}">
+                                        Đổi email
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- End Account Login Area -->
+    <footer class="footer" th:insert="publics/footer.html"></footer>
+    <!-- ========================= scroll-top ========================= -->
+    <a href="#" class="scroll-top"> <i class="lni lni-chevron-up"></i>
+    </a>
+
+    <!-- ========================= JS here ========================= -->
+
+    <script>
+        function openPopup() {
+            window.open("http://www.example.com", "Popup", "height=600,width=600");
+        }
+    </script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/tiny-slider.js"></script>
+    <script src="assets/js/glightbox.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/validate.js"></script>
+</body>
+
+</html>

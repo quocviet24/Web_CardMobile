@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>ShopGrids</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.svg" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- ========================= CSS here ========================= -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/LineIcons.3.0.css" />
+    <link rel="stylesheet" href="assets/css/tiny-slider.css" />
+    <link rel="stylesheet" href="assets/css/glightbox.min.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&amp;display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+
+    <!-- cartbtn style-->
+    <style>
+        .add-to-cart {
+            background: #fff;
+            --background-scale: 1;
+            --text-o: 1;
+            --text-x: 12px;
+            --cart-x: -48px;
+            --text-color: #fff !important;
+            --cart: #fff !important;
+            --cart-y: 0px;
+            --cart-rotate: 0deg;
+            --cart-scale: .75;
+            --cart-clip: 0px;
+            --cart-clip-x: 0px;
+            --cart-tick-offset: 10px;
+            --cart-tick-color: #00fffc;
+            --shirt-y: -16px;
+            --shirt-scale: 0;
+            --shirt-color: #17171B;
+            --shirt-logo: #fff;
+            --shirt-second-y: 24px;
+            --shirt-second-color: #fff;
+            --shirt-second-logo: #17171B;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            width: 164px;
+            margin: 0;
+            cursor: pointer;
+            position: relative;
+            font-family: inherit;
+        }
+
+        .add-to-cart:before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            border-radius: 5px;
+            transition: background 0.25s;
+            background: var(--background,
+                    var(--background-default));
+            transform: scaleX(var(--background-scale)) translateZ(0);
+        }
+
+        .add-to-cart:hover {
+            --background: var(--background-hover);
+            --text-color: #fff;
+            --cart: #fff;
+        }
+
+        .add-to-cart span {
+            color: white;
+            display: block;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 24px;
+            color: var(--text-color);
+            opacity: var(--text-o);
+            transform: translateX(var(--text-x)) translateZ(0);
+        }
+
+        .add-to-cart svg {
+            display: block;
+            width: var(--svg-width, 24px);
+            height: var(--svg-height, 24px);
+            position: var(--svg-position, relative);
+            left: var(--svg-left, 0);
+            top: var(--svg-top, 0);
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .add-to-cart svg path {
+            fill: var(--svg-fill, none);
+            stroke: var(--svg-stroke, none);
+            stroke-width: var(--svg-stroke-width, 2);
+        }
+
+        .add-to-cart .morph {
+            --svg-width: 64px;
+            --svg-height: 13px;
+            --svg-left: 50%;
+            --svg-top: -12px;
+            --svg-position: absolute;
+            --svg-fill: var(--background, var(--background-default));
+            transition: fill 0.25s;
+            pointer-events: none;
+            margin-left: -32px;
+        }
+
+        .add-to-cart .shirt,
+        .add-to-cart .cart {
+            pointer-events: none;
+            position: absolute;
+            left: 50%;
+        }
+
+        .add-to-cart .shirt {
+            margin: -12px 0 0 -12px;
+            top: 0;
+            transform-origin: 50% 100%;
+            transform: translateY(var(--shirt-y)) scale(var(--shirt-scale));
+        }
+
+        .add-to-cart .shirt svg {
+            --svg-fill: var(--shirt-color);
+        }
+
+        .add-to-cart .shirt svg g {
+            --svg-fill: var(--svg-g-fill, var(--shirt-logo));
+        }
+
+        .add-to-cart .shirt svg.second {
+            --svg-fill: var(--shirt-second-color);
+            --svg-g-fill: var(--shirt-second-logo);
+            --svg-position: absolute;
+            -webkit-clip-path: polygon(0 var(--shirt-second-y), 24px var(--shirt-second-y), 24px 24px, 0 24px);
+            clip-path: polygon(0 var(--shirt-second-y), 24px var(--shirt-second-y), 24px 24px, 0 24px);
+        }
+
+        .add-to-cart .cart {
+            --svg-width: 36px;
+            --svg-height: 26px;
+            --svg-stroke: var(--cart);
+            top: 10px;
+            margin-left: -18px;
+            transform: translate(var(--cart-x), var(--cart-y)) rotate(var(--cart-rotate)) scale(var(--cart-scale)) translateZ(0);
+        }
+
+        .add-to-cart .cart:before {
+            content: "";
+            display: block;
+            width: 22px;
+            height: 12px;
+            position: absolute;
+            left: 7px;
+            top: 7px;
+            background: var(--cart);
+            -webkit-clip-path: polygon(0 0, 22px 0, calc(22px - var(--cart-clip-x)) var(--cart-clip), var(--cart-clip-x) var(--cart-clip));
+            clip-path: polygon(0 0, 22px 0, calc(22px - var(--cart-clip-x)) var(--cart-clip), var(--cart-clip-x) var(--cart-clip));
+        }
+
+        .add-to-cart .cart path.wheel {
+            --svg-stroke-width: 1.5;
+        }
+
+        .add-to-cart .cart path.tick {
+            --svg-stroke: var(--cart-tick-color);
+            stroke-dasharray: 10px;
+            stroke-dashoffset: var(--cart-tick-offset);
+        }
+
+        .add-to-cart {
+            --text-color: #000;
+            --cart: #000;
+            --cart-tick-color: #00fffc;
+            --shirt-color: #fff;
+            --shirt-logo: #17171B;
+            --shirt-second-color: #17171B;
+            --shirt-second-logo: #fff;
+        }
+    </style>
+
+    <style>
+        .card {
+            border: none;
+            border-radius: 15px;
+        }
+
+        .card.shadow-sm {
+            border: 1px solid #ddd;
+            /* Add a subtle border */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            /* Adjust the box-shadow for depth */
+        }
+
+        .card-title {
+            color: #333;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .card-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: #007bff;
+        }
+
+        .provider-list,
+        .second-provider-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .check-unit {
+            display: inline-block;
+            position: relative;
+            margin: 5px;
+        }
+
+        .btn-check {
+            display: none;
+        }
+
+        .ratio-unit {
+            display: block;
+            width: 140px;
+            height: 70px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-check:checked+.ratio-unit {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        .icon {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            color: #007bff;
+            background: white;
+            border-radius: 50%;
+            padding: 2px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .btn-check:checked~.icon {
+            display: block;
+        }
+
+        .second-provider-list .ratio-unit {
+            width: 140px;
+            height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .second-provider-list .price {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .second-provider-list .stock {
+            font-size: 10px;
+            color: #6c757d;
+        }
+
+        #quantityInput {
+            max-width: 100px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-weight: 600;
+            background-color: #0167F3;
+            color: #fff !important;
+            transition: all 0.3s ease-out;
+            border-radius: 4px;
+            box-shadow: none !important;
+        }
+
+        .btn-reverse {
+            background-color: #081828 !important;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+            padding: 12px 30px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #081828;
+            box-shadow: 0 1rem 3rem rgba(35, 38, 45, 0.15) !important;
+            transform: translateY(-5px);
+        }
+
+        .ratio-unit.disabled {
+            cursor: not-allowed;
+        }
+
+        .check-unit.disabled .ratio-unit .price,
+        .check-unit.disabled .ratio-unit .stock {
+            color: #dc3545;
+        }
+
+
+        .btn-check:disabled+.ratio-unit {
+            pointer-events: none;
+        }
+
+        #quantityInput.form-control.form-control-sm {
+            margin: 0 0 0 0;
+        }
+
+        .input-group>.btn:hover {
+            transform: none;
+        }
+
+        .card-title {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .list-unstyled li {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .list-unstyled li span.text-danger {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        /* Loading spinner style */
+        .spinner-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Disable form fields and button */
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* padding of the form */
+        .section {
+            padding-top: 0px;
+            padding-bottom: 30px;
+        }
+    </style>
+
+</head>
+
+<body>
+<!-- Loading Spinner -->
+<div id="loadingSpinner" class="spinner-wrapper" style="display: none;">
+    <div class="spinner"></div>
+</div>
+
+<!-- Start Header Area -->
+<header th:insert="../templates/publics/header.html"></header>
+<!-- End Header Area -->
+
+<!-- Start Featured Categories Area -->
+<section id="featured-categories" class="trending-product section">
+    <div class="container">
+        <div class="row">
+            <div class="container mt-4">
+                <div id="flashMessage" style="display: none;" th:text="${message}"></div>
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h3 class="card-title text-center mb-4">Mua thẻ điện thoại</h3>
+                                <div id="flashMessageBE" th:text="${errorCheckoutHome}" style="display: none;">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-4">
+                                            <h5 class="mb-3">1. Chọn nhà mạng:</h5>
+                                            <ul class="provider-list d-flex flex-wrap justify-content-center">
+                                                <li th:each="publisher : ${publishers}"
+                                                    th:if="${!publisher.isDeleted}" class="m-2">
+                                                    <label class="check-unit publisher">
+                                                        <input class="btn-check" type="radio" name="publisherId"
+                                                               th:value="${publisher.id}"
+                                                               th:checked="${publisher.id==publisherId?true:false}"
+                                                               onclick="fetchCardTypes(this.value)">
+                                                        <img class="ratio-unit"
+                                                             th:src="@{'assets/images/publisher/' + ${publisher.image}}"
+                                                             th:alt="${publisher.name}">
+                                                        <i class="uis uis-check-circle icon"></i>
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div id="cardTypesContainer" class="mb-4" style="display: none;">
+                                            <h5 class="mb-3">2. Chọn mệnh giá:</h5>
+                                            <ul class="second-provider-list d-flex flex-wrap justify-content-center"
+                                                id="cardTypesList">
+                                            </ul>
+                                        </div>
+
+                                        <div id="quantitySection" class="mt-4" style="display: none;">
+                                            <div class="form-group mb-3">
+                                                <h5 class="mb-3">3. Chọn số lượng:</h5>
+                                                <div class="input-group justify-content-center">
+                                                    <button type="button" class="btn btn-primary quantity-btn"
+                                                            onclick="decreaseQuantity()">-</button>
+                                                    <input type="number" class="form-control form-control-sm"
+                                                           id="quantityInput" min="1" value="1"
+                                                           style="text-align: center;">
+                                                    <button type="button" class="btn btn-primary quantity-btn"
+                                                            onclick="increaseQuantity()">+</button>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <button class="add-to-cart btn btn-primary mr-2"
+                                                        onclick="delayedAddToCart()">
+                                                    <span>Thêm vào giỏ</span>
+                                                    <svg class="morph" viewBox="0 0 64 13">
+                                                        <path
+                                                                d="M0 12C6 12 17 12 32 12C47.9024 12 58 12 64 12V13H0V12Z" />
+                                                    </svg>
+                                                    <div class="cart">
+                                                        <svg viewBox="0 0 36 26">
+                                                            <path d="M1 2.5H6L10 18.5H25.5L28.5 7.5L7.5 7.5"
+                                                                  class="shape" />
+                                                            <path
+                                                                    d="M11.5 25C12.6046 25 13.5 24.1046 13.5 23C13.5 21.8954 12.6046 21 11.5 21C10.3954 21 9.5 21.8954 9.5 23C9.5 24.1046 10.3954 25 11.5 25Z"
+                                                                    class="wheel" />
+                                                            <path
+                                                                    d="M24 25C25.1046 25 26 24.1046 26 23C26 21.8954 25.1046 21 24 21C22.8954 21 22 21.8954 22 23C22 24.1046 22.8954 25 24 25Z"
+                                                                    class="wheel" />
+                                                            <path d="M14.5 13.5L16.5 15.5L21.5 10.5" class="tick" />
+                                                        </svg>
+                                                    </div>
+                                                </button>
+                                                <form id="checkoutForm" action="/order/checkout" method="post">
+                                                    <input type="hidden" id="publisher" name="publisher" value="">
+                                                    <input type="hidden" id="cardType" name="cardType" value="">
+                                                    <input type="hidden" id="quantity" name="quantity" value="1">
+                                                    <div class="d-flex justify-content-center gap-2">
+                                                        <button type="submit" class="btn btn-success" id="paymentButton">Thanh toán</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div id="note">
+                                                    <h5 class="card-title text-center">Lưu ý</h5>
+                                                    <ul class="list-unstyled">
+                                                        <li><span class="text-danger">1.</span> Bạn cần đăng nhập để
+                                                            mua
+                                                            hàng và xem lịch sử
+                                                            đơn hàng.</li>
+                                                        <hr>
+                                                        <li><span class="text-danger">2.</span> Hãy hoàn tất thanh
+                                                            toán trong vòng 5 phút kể
+                                                            từ khi chọn sản phẩm. Khi quá hạn 5 phút hoặc thoát ra
+                                                            ngoài, các đơn hàng sẽ mặc định thành trạng thái đang
+                                                            thanh toán.
+                                                            Bạn có thể mua tiếp đơn hàng đó trong lịch sử đơn hàng.
+                                                        </li>
+                                                        <hr>
+                                                        <li><span class="text-danger">3.</span> Mã thẻ sẽ được hiển
+                                                            thị
+                                                            trong lịch sử đơn hàng của bạn sau khi thanh toán thành
+                                                            công.</li>
+                                                        <hr>
+                                                    </ul>
+                                                </div>
+                                                <button id="startOverviewButton"
+                                                        class="btn btn-primary w-100 text-center mb-2">Hướng dẫn tổng
+                                                    quan</button>
+                                                <button id="startProductGuide"
+                                                        class="btn btn-primary w-100 text-center">Hướng dẫn mua
+                                                    hàng</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Start Footer Area -->
+<footer class="footer" th:insert="publics/footer.html"></footer>
+<!--/ End Footer Area -->
+
+<!-- ========================= scroll-top ========================= -->
+<a href="#" class="scroll-top">
+    <i class="lni lni-chevron-up"></i>
+</a>
+
+<!-- ========================= JS here ========================= -->
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/tiny-slider.js"></script>
+<script src="assets/js/glightbox.min.js"></script>
+<script src="assets/js/main.js"></script>
+<script crossorigin="anonymous" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.0/gsap.min.js"></script>
+
+<script>
+    <!-- update value follow input-->
+    document.getElementById('quantityInput').addEventListener('input', function () {
+        var value = this.value;
+        var numericValue = parseInt(value, 10);
+        if (isNaN(numericValue)) {
+            document.getElementById('quantity').value = 'a';
+        } else {
+            document.getElementById('quantity').value = value;
+        }
+    });
+</script>
+<!-- Driver.js for instruction script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const driver = window.driver.js.driver;
+
+        // Site tour configuration
+        const siteTourSteps = [
+            {
+                element: '.topbar',
+                popover: {
+                    title: 'Điều hướng nhanh',
+                    description: 'Sử dụng thanh điều hướng này để truy cập trang chủ và xem lịch sử mua hàng của bạn',
+                    position: 'bottom',
+                },
+            },
+            {
+                element: 'a[href="/order"]',  // Selector for admin page link
+                popover: {
+                    title: 'Theo dõi đơn hàng của bạn',
+                    description: 'Xem lại chi tiết đơn hàng, trạng thái đơn hàng và thông tin thanh toán.',
+                    position: 'bottom',
+                },
+            },
+            {
+                element: '.top-end',  // Selector for account zone
+                popover: {
+                    title: 'Tài khoản của bạn',
+                    description: 'Đăng nhập, đăng ký, hoặc xem thông tin tài khoản của bạn.',
+                    position: 'bottom',
+                },
+            },
+
+            {
+                element: '.navbar-cart', // Selector for cart icon
+                popover: {
+                    title: 'Giỏ hàng',
+                    description: 'Xem các sản phẩm đã chọn và tiến hành thanh toán.',
+                    position: 'top',
+                }
+            },
+            {
+                element: '#featured-categories', // Selector for buying zone
+                popover: {
+                    title: 'Khu vực mua hàng',
+                    description: 'Chọn loại thẻ và số lượng bạn muốn mua tại đây.',
+                    position: 'top',
+                },
+            }
+        ];
+
+        // Product tour configuration
+        const productTourSteps = [
+            {
+                element: '.card-body',
+                popover: {
+                    title: 'Chào mừng bạn đến với hệ thống thẻ cào của chúng tôi',
+                    description: 'Thẻ này chứa tất cả các tùy chọn để mua thẻ điện thoại.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '#note',
+                popover: {
+                    title: 'Lưu ý trước khi mua hàng',
+                    description: 'Vui lòng đọc kỹ các lưu ý sau trước khi mua hàng để đảm bảo giao dịch diễn ra thuận lợi.',
+                    position: 'bottom'
+                }
+            },
+            {
+                element: '.provider-list',
+                popover: {
+                    title: 'Chọn nhà cung cấp',
+                    description: 'Chọn nhà cung cấp dịch vụ điện thoại ưa thích của bạn tại đây. <span style="color: red;"><b>Hãy chọn nhà cung cấp trước khi ấn next tới bước hướng dẫn tiếp theo.</b></span>',
+                    position: 'bottom',
+                },
+                onHighlighted: (element) => {
+                    const nextButton = document.querySelector('.driver-popover-next-btn');
+                    const selectedProvider = document.querySelector('.provider-list input[type="radio"]:checked');
+
+                    // Check if a publisher is already selected
+                    if (selectedProvider) {
+                        nextButton.disabled = false; // Enable the button if a publisher is selected
+                    } else {
+                        nextButton.disabled = true; // Disable if not
+                        const publisherRadios = document.querySelectorAll('.provider-list input[type="radio"]');
+                        publisherRadios.forEach(radio => {
+                            radio.addEventListener('change', () => {
+                                nextButton.disabled = false;
+                            });
+                        });
+                    }
+                }
+
+            },
+            {
+                element: '#cardTypesContainer',
+                popover: {
+                    title: 'Chọn mệnh giá thẻ',
+                    description: 'Chọn mệnh giá của thẻ bạn muốn mua. <span style="color: red;"><b>Hãy chọn mệnh giá trước khi ấn next tới bước hướng dẫn tiếp theo.</b></span>',
+                    position: 'top'
+                },
+                onHighlighted: (element) => {
+                    const nextButton = document.querySelector('.driver-popover-next-btn');
+                    const selectedCardType = document.querySelector('#cardTypesList input[type="radio"]:checked');
+
+                    // Check if a card type is already selected
+                    if (selectedCardType) {
+                        nextButton.disabled = false; // Enable the button if a card type is selected
+                    } else {
+                        nextButton.disabled = true; // Disable if not
+                        const cardTypeRadios = document.querySelectorAll('#cardTypesList input[type="radio"]');
+                        cardTypeRadios.forEach(radio => {
+                            radio.addEventListener('change', () => {
+                                nextButton.disabled = false;
+                            });
+                        });
+                    }
+                }
+            },
+            {
+                element: '#quantitySection',
+                popover: {
+                    title: 'Chọn số lượng',
+                    description: 'Chỉ định số lượng thẻ bạn muốn mua.',
+                    position: 'top'
+                }
+            },
+            {
+                element: '.add-to-cart',
+                popover: {
+                    title: 'Thêm vào giỏ hàng',
+                    description: 'Nhấp vào đây để thêm thẻ đã chọn vào giỏ hàng.',
+                    position: 'left'
+                }
+            },
+            {
+                element: '#checkoutForm button[type="submit"]',
+                popover: {
+                    title: 'Thanh toán',
+                    description: 'Sẵn sàng mua? Nhấp vào đây để tiến hành thanh toán.',
+                    position: 'left'
+                }
+            }
+        ];
+
+        // Function to start the site tour
+        function startSiteTour() {
+            const driverSite = driver({
+                showProgress: true,
+                prevBtnText: 'Trước',
+                nextBtnText: 'Tiếp',
+                doneBtnText: 'Hoàn thành',
+                steps: siteTourSteps
+            });
+            driverSite.drive();
+        }
+
+        // Function to start the product tour
+        function startProductTour() {
+            const driverProduct = driver({
+                showProgress: true,
+                prevBtnText: 'Trước',
+                nextBtnText: 'Tiếp',
+                doneBtnText: 'Hoàn thành',
+                steps: productTourSteps
+            });
+            driverProduct.drive();
+        }
+
+        // Add event listeners to the buttons
+        document.getElementById('startProductGuide').addEventListener('click', startProductTour);
+        document.getElementById('startOverviewButton').addEventListener('click', startSiteTour);
+    });
+</script>
+
+<script>
+    function updatePublisher(element) {
+        var publisherName = element.nextElementSibling.getAttribute("alt");
+        document.getElementById("publisher").value = publisherName;
+    }
+</script>
+
+<!-- Check for flashMessage script on back-end -->
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        var errorMessage = $('#flashMessageBE').text();
+        if (errorMessage) {
+            displayFlashMessage(errorMessage);
+            // Xóa thuộc tính khỏi session sau khi hiển thị
+            $('#flashMessageBE').remove();
+        }
+    });
+</script>
+
+<!-- Add to cart & checkout function script -->
+<script>
+    $(document).ready(function () {
+        checkForFlashMessage();
+        var initialPublisherId = $('input[name="publisherId"]:checked').val();
+        if (initialPublisherId) {
+            fetchCardTypes(initialPublisherId);
+        }
+    });
+
+    // format price when showing
+    function formatPrice(price) {
+        if (typeof price === 'number') {
+            return (price).toLocaleString('de-DE') + "đ";
+        } else {
+            console.error("Invalid price format:", price);
+            return "N/A";
+        }
+    }
+
+    // Fetch card types when choosing publisher
+    function fetchCardTypes(publisherId) {
+        $.ajax({
+            url: '/',
+            type: 'POST',
+            data: {
+                publisherId: publisherId
+            },
+            success: function (data) {
+                data.sort((a, b) => a.unitPrice - b.unitPrice);
+                var cardTypesList = $('#cardTypesList');
+                cardTypesList.empty();
+                if (data.length === 0) {
+                    // No card types available, show static div
+                    cardTypesList.append('<div class="no-card-types">Không có mệnh giá thẻ nào cho nhà phát hành này.</div>');
+                    $('#cardTypesContainer').show();
+                    $('#quantitySection').hide();
+                } else {
+                    data.sort((a, b) => a.unitPrice - b.unitPrice);
+                    //loop
+                    data.forEach(function (cardType, index) {
+                        const formattedPrice = formatPrice(cardType.unitPrice);
+                        const isAvailable = cardType.inStock > 0;
+                        var listItem = `
+                <li>
+                    <label class="check-unit money ${!isAvailable ? 'disabled' : ''}">
+                        <input class="btn-check" type="radio" name="cardTypeId" value="${cardType.id}" ${!isAvailable ? 'disabled' : ''} onclick="updateCardTypeId(${cardType.id})">
+                        <span class="ratio-unit ${!isAvailable ? 'disabled' : ''}">
+                            <span class="price">${formattedPrice}</span>
+                            <span class="stock">Số lượng: ${cardType.inStock}</span>
+                        </span>
+                        <i class="uis uis-check-circle icon"></i>
+                    </label>
+                </li>`;
+                        cardTypesList.append(listItem);
+                    });
+
+                    $('#cardTypesContainer').show();
+                    $('#quantitySection').hide();
+
+                    updatePublisher($(`input[name='publisherId'][value='${publisherId}']`)[0]);
+                    updateCardTypeId(data[0].id); // Select the first card type by default
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching card types:", error);
+                alert('Failed to fetch card types.');
+            }
+        });
+    }
+
+    function updateCardTypeId(cardTypeId) {
+        // Update the cardType input field in the form
+        document.getElementById("cardType").value = cardTypeId;
+        updateQuantity(); // Update the quantity based on the selected card type
+    }
+
+    function updateQuantity() {
+        // Update the quantity input field in the form
+        var quantityInput = document.getElementById("quantityInput");
+        document.getElementById("quantity").value = quantityInput.value;
+    }
+
+    // show quantity input when choosing card type
+    $(document).on('change', 'input[name="cardTypeId"]', function () {
+        $('#quantitySection').show();
+    });
+
+    function increaseQuantity() {
+        var quantityInput = document.getElementById('quantityInput');
+        var currentValue = parseInt(quantityInput.value, 10);
+        quantityInput.value = currentValue + 1;
+        updateQuantity();
+    }
+
+    // Function to decrease quantity
+    function decreaseQuantity() {
+        var quantityInput = document.getElementById('quantityInput');
+        var currentValue = parseInt(quantityInput.value, 10);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            updateQuantity();
+        }
+    }
+
+    function delayedAddToCart() {
+        setTimeout(addToCart, 1800);
+    }
+
+    // add to cart btn
+    function addToCart() {
+        var cardTypeId = $('input[name="cardTypeId"]:checked').val();
+        var quantity = $("#quantityInput").val();
+
+        if (!cardTypeId) {
+            alert("Please select a card type.");
+            return;
+        }
+
+        $.ajax({
+            url: '/cart/add',
+            type: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            data: {
+                cardTypeId: cardTypeId,
+                quantity: quantity
+            },
+            complete: function (xhr, textStatus) {
+                if (xhr.status == 302) {
+                    var redirectUrl = xhr.getResponseHeader('Location');
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    } else {
+                        console.error("Redirect URL not found");
+                    }
+                } else if (xhr.status == 200) {
+                    if (xhr.responseText.includes('<title>Login</title>') ||
+                        xhr.responseText.includes('login-form')) {
+                        window.location.href = '/login';
+                    } else {
+                        const response = JSON.parse(xhr.responseText);
+                        const message = response.message;
+                        displayFlashMessage(response.message);
+                        updateCartCount();
+                    }
+                } else {
+                    console.error("Error adding to cart:", textStatus);
+                }
+            }
+        });
+    }
+
+    function updateCartCount() {
+        $.ajax({
+            url: '/cart/itemsCount',
+            type: 'GET',
+            success: function (data) {
+                if (data.loggedIn) {
+                    $('.total-items').text(data.cartItemCount);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching cart count:", error);
+            }
+        });
+    }
+
+    // called when page loads.
+    // If the element exists and contains text, it calls displayFlashMessage() to show the message.
+    function checkForFlashMessage() {
+        // We use setTimeout to ensure this runs after the page has loaded
+        setTimeout(function () {
+            var flashMessage = document.getElementById('flashMessage');
+            if (flashMessage && flashMessage.textContent) {
+                displayFlashMessage(flashMessage.textContent);
+                // Clear the flash message to prevent it from showing again on refresh
+                flashMessage.textContent = '';
+            }
+        }, 100); // Delay time
+    }
+
+    // Display flash message
+    function displayFlashMessage(message) {
+        var flashDiv = $('<div>', {
+            class: 'alert',
+            text: message,
+            css: {
+                position: 'fixed',
+                top: '20px',
+                right: '20px',
+                zIndex: 9999,
+                padding: '15px',
+                borderRadius: '5px',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+            }
+        });
+
+        if (message.includes("thành công") || message.includes("success")) {
+            flashDiv.addClass('alert-success');
+        } else {
+            flashDiv.addClass('alert-danger');
+        }
+        $('body').append(flashDiv);
+        setTimeout(function () {
+            flashDiv.fadeOut('slow', function () {
+                $(this).remove();
+            });
+        }, 3000);
+    }
+    function checkout() {
+        var cardTypeId = $('input[name="cardType"]:checked').val();
+        var quantity = $("#quantityInput").val();
+
+        if (!cardTypeId) {
+            alert("Please select a card type.");
+            return;
+        }
+
+        $.ajax({
+            url: '/order/checkout',
+            type: 'POST',
+            data: {
+                cardTypeId: cardTypeId,
+                quantity: quantity
+            },
+            complete: function (xhr, textStatus) {
+                if (xhr.status == 302) {
+                    var redirectUrl = xhr.getResponseHeader('Location');
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    } else {
+                        console.error("Redirect URL not found");
+                    }
+                } else if (xhr.status == 200) {
+                    if (xhr.responseText.includes('<title>Login</title>') ||
+                        xhr.responseText.includes('login-form')) {
+                        window.location.href = '/login';
+                    } else {
+                        const response = JSON.parse(xhr.responseText);
+                        const message = response.message;
+                        displayFlashMessage(response.message);
+                    }
+                } else {
+                    console.error("Error creating order:", textStatus);
+                }
+            }
+        });
+    }
+</script>
+
+<!-- Add to cart animated button script -->
+<script>
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        let shirt = button.querySelectorAll('.shirt svg > path')
+        button.addEventListener('pointerdown', e => {
+            if (button.classList.contains('active')) {
+                return
+            }
+            gsap.to(button, {
+                '--background-scale': .97,
+                duration: .15
+            })
+        })
+        button.addEventListener('click', e => {
+            e.preventDefault()
+            if (button.classList.contains('active')) {
+                return
+            }
+            button.classList.add('active')
+            gsap.to(button, {
+                keyframes: [{
+                    '--background-scale': .97,
+                    duration: .15
+                }, {
+                    '--background-scale': 1,
+                    delay: .125,
+                    duration: 1.2,
+                    ease: 'elastic.out(1, .6)'
+                }]
+            })
+            gsap.to(button, {
+                keyframes: [{
+                    '--shirt-scale': 1,
+                    '--shirt-y': '-42px',
+                    '--cart-x': '0px',
+                    '--cart-scale': 1,
+                    duration: .4,
+                    ease: 'power1.in'
+                }, {
+                    '--shirt-y': '-40px',
+                    duration: .3
+                }, {
+                    '--shirt-y': '16px',
+                    '--shirt-scale': .9,
+                    duration: .25,
+                    ease: 'none'
+                }, {
+                    '--shirt-scale': 0,
+                    duration: .3,
+                    ease: 'none'
+                }]
+            })
+            gsap.to(button, {
+                '--shirt-second-y': '0px',
+                delay: .835,
+                duration: .12
+            })
+            gsap.to(button, {
+                keyframes: [{
+                    '--cart-clip': '12px',
+                    '--cart-clip-x': '3px',
+                    delay: .9,
+                    duration: .06
+                }, {
+                    '--cart-y': '2px',
+                    duration: .1
+                }, {
+                    '--cart-tick-offset': '0px',
+                    '--cart-y': '0px',
+                    duration: .2,
+                    onComplete() {
+                        button.style.overflow = 'hidden'
+                    }
+                }, {
+                    '--cart-x': '52px',
+                    '--cart-rotate': '-15deg',
+                    duration: .2
+                }, {
+                    '--cart-x': '104px',
+                    '--cart-rotate': '0deg',
+                    duration: .2,
+                    clearProps: true,
+                    onComplete() {
+                        button.style.overflow = 'hidden'
+                        button.style.setProperty('--text-o', 0)
+                        button.style.setProperty('--text-x', '0px')
+                        button.style.setProperty('--cart-x', '-104px')
+                    }
+                }, {
+                    '--text-o': 1,
+                    '--text-x': '12px',
+                    '--cart-x': '-48px',
+                    '--cart-scale': .75,
+                    duration: .25,
+                    clearProps: true,
+                    onComplete() {
+                        button.classList.remove('active')
+                    }
+                }]
+            })
+            gsap.to(button, {
+                keyframes: [{
+                    '--text-o': 0,
+                    duration: .3
+                }]
+            })
+
+            // Instead of morphing, we'll animate the opacity and scale of the shirt
+            gsap.to(shirt, {
+                opacity: 0,
+                scale: 0.5,
+                duration: 0.25,
+                delay: 0.25,
+                yoyo: true,
+                repeat: 1
+            })
+        })
+    })
+</script>
+<!-- Spinner load trigger -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Hide spinner on page load
+    document.getElementById('loadingSpinner').style.display = 'none';
+
+    // Show spinner and disable button on button click
+    document.getElementById('paymentButton').addEventListener('click', function (event) {
+        // Show the spinner
+        document.getElementById('loadingSpinner').style.display = 'flex';
+
+        // Disable the button to prevent further clicks
+        this.classList.add('disabled');
+
+        // Optionally, submit the form if it’s a submit button
+        // If the button is within a form, you can let it submit naturally
+        // If not, handle the form submission here
+    });
+});
+
+</script>
+</body>
+
+</html>

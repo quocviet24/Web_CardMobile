@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Thông tin tài khoản chi tiết</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}" />
+</head>
+
+<body>
+    <div class="container-scroller d-flex">
+        <!-- partial:../../partials/_sidebar.html -->
+        <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper" style="margin-left: 16%">
+            <!-- partial:./partials/_navbar.html -->
+            <div th:insert="../templates/pages/navbar.html"></div>
+            <div class="account-login section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+                            <div class="register-form">
+                                <h1 style="text-align: center;" class="title"><strong>Thông chi tiết phân loại thẻ</strong></h1>
+                                <!--missing id of form-->
+                                <div class="row" th:object="${cardType}">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="cardId" class="required">ID</label>
+                                            <input th:value="*{id}" class="form-control" type="text" id="cardId"
+                                                name="cardId" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="publisher" class="required">Tên nhà phát hành</label>
+                                            <input th:value="*{publisher.name}" class="form-control" type="text"
+                                                id="publisher" name="publisher" readonly>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="unitPrice">Số tiền</label>
+                                            <input th:value="*{unitPrice}" class="form-control" type="text" id="unitPrice"
+                                                name="unitPrice" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="inStock" class="required">Số lượng trong kho</label>
+                                            <input th:value="*{inStock}" class="form-control" type="text"
+                                                id="inStock" name="inStock" readonly>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="soldQuantity">Đã bán</label>
+                                            <input th:value="*{soldQuantity}" class="form-control" type="text" id="soldQuantity"
+                                                name="soldQuantity" readonly>
+                                        </div>
+                                    </div>
+<!--                                    IS Delete-->
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="isDelete">Trạng thái</label>
+                                            <input th:value="*{isDeleted}? 'Deleted':'Active'" class="form-control" type="text" id="isDelete"
+                                                   name="isDelete" readonly>
+                                        </div>
+                                    </div>
+<!--                                    Delete Date-->
+                                    <div class="col-sm-4" th:if="${deletedDate != null}">
+                                        <div class="form-group">
+                                            <label for="deleteDate">Ngày xóa</label>
+                                            <input th:value="*{deletedDate}" class="form-control" type="text" id="deleteDate"
+                                                   name="deleteDate" readonly>
+                                        </div>
+                                    </div>
+<!--                                    Delete By-->
+                                    <div class="col-sm-4" th:if="${deletedBy != null}">
+                                        <div class="form-group">
+                                            <label for="deleteBy">Xóa bởi</label>
+                                            <input th:value="*{deletedBy}" class="form-control" type="text" id="deleteBy"
+                                                   name="deleteBy" readonly>
+                                        </div>
+                                    </div>
+<!--                                    Create date-->
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="createdDate">Ngày tạo</label>
+                                            <input th:value="*{createdDate}" class="form-control" type="text" id="createdDate"
+                                                   name="createdDate" readonly>
+                                        </div>
+                                    </div>
+<!--                                    Create By-->
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label for="createdBy">Tạo bởi</label>
+                                            <input th:value="*{createdBy}" class="form-control" type="text" id="createdBy"
+                                                   name="createdBy" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- endinject -->
+                <!-- Plugin js for this page-->
+                <script src="../admin/js/hoverable-collapse.js"></script>
+</body>
+
+</html>

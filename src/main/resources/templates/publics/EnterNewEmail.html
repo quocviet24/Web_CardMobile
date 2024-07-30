@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Đổi lại email</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.svg" />
+
+    <!-- ========================= CSS here ========================= -->
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/LineIcons.3.0.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/tiny-slider.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/glightbox.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+
+</head>
+
+<body>
+    <!-- Preloader -->
+    <!-- <div class="preloader">
+    <div class="preloader-inner">
+        <div class="preloader-icon">
+            <span></span> <span></span>
+        </div>
+    </div>
+</div> -->
+    <!-- /End Preloader -->
+
+    <!-- Start Header Area -->
+    <header th:insert="publics/header.html"></header>
+    <!-- End Header Area -->
+
+    <!-- Start Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="breadcrumbs-content">
+                        <h1 class="page-title">Đổi lại mật khẩu</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumbs -->
+
+    <!-- Start Account Change Password Area -->
+    <div class="account-login section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+                    <form class="card login-form" action="/profile/change-email" method="post" th:object="${user}">
+                        <div class="card-body">
+                            <div class="title">
+                                <h3>Đổi Email</h3>
+                                <p>Vui lòng nhập địa chỉ email mà bạn muốn đổi.</p>
+                            </div>
+                            <div class="form-group input-group">
+                                <label for="email">Email Mới</label>
+                                <input class="form-control" type="email" id="email" name="email" required
+                                       th:field="*{email}"> 
+                                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></p>
+                                <div th:if="${emailExisted}" class="text-danger">
+                                    Email đã tồn tại
+                                </div>
+                            </div>
+                            <div class="button">
+                                <button class="btn" type="submit">Xác Nhận Thay Đổi Email</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/validate.js"></script> <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var emailInput = document.getElementById('email-input');
+    var emailError = document.querySelector('[th:errors="*{email}"]');
+
+    emailInput.addEventListener('input', function() {
+        if (emailInput.validity.valid) {
+            emailError.textContent = ''; // Clear the error message if the input is valid
+        }
+    });
+});
+
+</script>
+
+    <!-- End Account Change Password Area -->
+
+    <footer class="footer" th:insert="publics/footer.html"></footer>
+
+    <!-- ========================= scroll-top ========================= -->
+    <a href="#" class="scroll-top"> <i class="lni lni-chevron-up"></i></a>
+
+    <!-- ========================= JS here ========================= -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/tiny-slider.js"></script>
+    <script src="assets/js/glightbox.min.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

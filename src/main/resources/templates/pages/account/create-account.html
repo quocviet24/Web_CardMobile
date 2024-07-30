@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tạo tài khoản</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}" />
+</head>
+
+<body>
+    <div class="container-scroller d-flex">
+        <!-- partial:../../partials/_sidebar.html -->
+        <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- partial:./partials/_navbar.html -->
+            <div th:insert="../templates/pages/navbar.html"></div>
+            <div class="account-login section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+                            <div class="register-form">
+                                <h1 style="text-align: center;" class="title"><strong>Tạo tài khoản</strong></h1>
+                                <!--missing id of form-->
+                                <form id="form-create" class="row" method="post" action="/account/create"
+                                    th:object="${user}">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="username" class="required">Tên đăng nhập</label>
+                                            <input th:value="*{username}" class="form-control" type="text" id="username"
+                                                name="username" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="firstname" class="required">Tên</label>
+                                            <input th:value="*{firstname}" class="form-control" type="text"
+                                                id="firstname" name="firstname" required>
+                                            <p th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"
+                                                class="text-danger"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="lastname">Họ</label>
+                                            <input th:value="*{lastname}" class="form-control" type="text" id="lastname"
+                                                name="lastName">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="email-input" class="required">Email</label>
+                                            <input th:value="*{email}" class="form-control" type="email"
+                                                id="email-input" name="email" required>
+                                            <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                                                class="text-danger"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="phone-input">Số điện thoại</label>
+                                            <input th:value="*{phone}" class="form-control" type="text" id="phone-input"
+                                                name="phone">
+                                            <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
+                                                class="text-danger"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="password-input" class="required">Mật khẩu</label>
+                                            <input th:value="*{password}" class="form-control" type="password"
+                                                id="password-input" name="password" required>
+                                            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="repassword-input" class="required">Xác thực mật khẩu</label>
+                                            <input class="form-control" type="password" id="repassword-input"
+                                                name="repassword" th:value="*{repassword}" required>
+                                        </div>
+                                    </div>
+                                    <div class="button">
+                                        <button class="btn btn-outline-secondary" onclick="submitForm('form-create')"
+                                            type="button">Tạo tài khoản</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function submitForm(formId) {
+            let email = document.getElementById("email-input").value;
+            let password = document.getElementById("password-input").value;
+            let repassword = document.getElementById("repassword-input").value;
+            let phone = document.getElementById("phone-input").value;
+            if (document.getElementById('username').value == '') {
+                window.alert('Username is required');
+                return;
+            }
+            if (document.getElementById('firstname').value == '') {
+                window.alert('First Name is required');
+                return;
+            }
+            if (phone !== "") {
+                if (phone.length != 10) {
+                    alert("Phone number is not valid!");
+                    return;
+                }
+                let phoneRegex = /^[0-9]+$/;
+                if (!phoneRegex.test(phone)) {
+                    alert("Phone number is not valid!");
+                    return;
+                }
+            }
+            let emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (emailRegex.test(email) === false) {
+                window.alert('Email is invalid');
+                return;
+            }
+            if (password.length < 8) {
+                alert("Password must be at least 8 characters!");
+                return;
+            }
+            if (password !== repassword) {
+                alert("Re-password not match!");
+                return;
+            }
+            var form = document.getElementById(formId);
+            form.submit();
+        }
+    </script>
+    <!-- Plugin js for this page-->
+    <script th:src="@{../admin/vendors/js/vendor.bundle.base.js}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <script src="../admin/js/jquery.cookie.js" type="text/javascript"></script>
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="../admin/js/off-canvas.js"></script>
+    <script src="../admin/js/hoverable-collapse.js"></script>
+    <script src="../admin/js/template.js"></script>
+</body>
+
+</html>

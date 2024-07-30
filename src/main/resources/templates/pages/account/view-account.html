@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title>Danh sách tài khoản</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}"/>
+</head>
+
+<body>
+<div class="container-scroller d-flex">
+    <!-- partial:../../partials/_sidebar.html -->
+    <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:./partials/_navbar.html -->
+        <div th:insert="../templates/pages/navbar.html"></div>
+        <h1 class="title" style="text-align: center;"><strong>Danh sách tài khoản</strong></h1>
+        <br>
+        <!--search and sort part-->
+        <div class="row" style="text-align: center;">
+            <div class="col-sm-3">
+                <button class="btn btn-sm btn-outline-success" onclick="window.location.href='/account/create'">Tạo
+                    tài khoản
+                </button>
+            </div>
+            <div class="col-sm-9">
+                <form action="/account/filter" id="filter-form" method="get">
+                    <input name="role" th:checked="${role != null && role.contains(1)}" type="checkbox" value="1">
+                    <label for="admin">Quản trị viên</label>
+                    <input name="role" th:checked="${role != null && role.contains(2)}" type="checkbox" value="2">
+                    <label for="customer">Khách hàng</label>
+                    <input name="is-deleted" th:checked="${isDeleted != null && isDeleted.contains(0)}" type="checkbox"
+                           value="0">
+                    <label for="true">Đang hoạt động</label>
+                    <input name="is-deleted" th:checked="${isDeleted != null && isDeleted.contains(1)}" type="checkbox"
+                           value="1">
+                    <label for="false">Bị khóa</label>
+                    <input name="username" placeholder="Tìm tên đăng nhập" th:value="${username}" type="text">
+                    <button class="btn btn-sm btn-outline-success">Lọc</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="resetForm()" type="button">Bỏ
+                        lọc
+                    </button>
+                </form>
+            </div>
+        </div>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-12">
+                    <div th:if="${listAccount!=null && !listAccount.isEmpty()}">
+                        <table class="col-sm-8 table table-striped table-hover">
+                            <tr>
+                                <th>Trạng thái</th>
+                                <th>Tên đăng nhập</th>
+                                <th>Vị trí</th>
+                                <th>Quyền</th>
+                                <th>Đơn hàng</th>
+                            </tr>
+                            <div class="container-fluid">
+                                <div th:each="account : ${listAccount}">
+                                    <tr>
+                                        <td>
+                                            <div th:if="${account.roleId == 2}">
+                                                <div class="form-switch">
+                                                    <input class="form-check-input" role="switch" th:checked="${account.isDeleted?'false':'true'}"
+                                                           th:id="'status'+${account.username}"
+                                                           th:onchange="updateStatus([[${account.username}]],[[${account.isDeleted}]])"
+                                                           type="checkbox">
+                                                </div>
+                                            </div>
+                                            <div th:if="${account.roleId == 1}">
+                                                <div class="form-switch">
+                                                    <input class="form-check-input" disabled role="switch"
+                                                           th:checked="${account.isDeleted?'false':'true'}" type="checkbox">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+
+                                            <a style="text-decoration: none;" th:href="@{'/account/accountdetail?username='+${account.username}}"
+                                               th:text="${account.username}">
+                                            </a>
+                                        </td>
+                                        <td th:text="${account.roleId == 1 ? 'Quản trị viên' : 'Khách hàng'}"></td>
+                                        <td>
+                                            <div style="display: flex;" th:if="${account.roleId==2}">
+                                                <a
+                                                        th:href="@{'/account/changepassword?username='+${account.username}}">
+                                                    <button
+                                                            class="btn btn-sm btn-outline-secondary">Đổi mật
+                                                        khẩu
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{'/orderAdmin/filterByAccount?username='+${account.username}}">
+                                                <button class="btn btn-sm btn-outline-secondary">Đơn hàng</button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </div>
+                            </div>
+                        </table>
+                    </div>
+                    <span style="color: red;" th:text="${error}"></span>
+                    <hr>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo='+${pageNo-1}}"
+                                                     th:if="${pageNo>0}">Previous</a></li>
+                            <li class="page-item"><a class="page-link"
+                                                     th:href="@{${action}+'pageNo=0'}"
+                                                     th:style="${pageNo==0?'background: gainsboro;':''}">1</a></li>
+                            <li class="page-item" th:if="${pageNo-1>0}"><a class="page-link"
+                                                                           style="display: inline-block;"
+                                                                           th:href="@{${action}+'pageNo='+${pageNo-2}}"
+                                                                           th:if="${pageNo-2>0}">...</a><a
+                                    class="page-link" style="display: inline-block;"
+                                    th:href="@{${action}+'pageNo='+${pageNo-1}}" th:text="${pageNo}"></a></li>
+                            <li class="page-item" th:if="${pageNo!=0 }"><a class="page-link"
+                                                                           href="#" style="background: gainsboro;"
+                                                                           th:text="${pageNo+1}"></a></li>
+                            <li class="page-item" th:if="${pageNo+2<totalPages}"><a class="page-link"
+                                                                                    style="display: inline-block;"
+                                                                                    th:href="@{${action}+'pageNo='+${pageNo+1}}"
+                                                                                    th:text="${pageNo+2}"></a><a
+                                    class="page-link" style="display: inline-block;" th:href="@{${action}+'pageNo='+${pageNo+2}}"
+                                    th:if="${pageNo+3<totalPages}">...</a></li>
+                            <li class="page-item" th:if="${totalPages-pageNo>1}"><a
+                                    class="page-link" th:href="@{${action}+'pageNo='+${totalPages-1}}"
+                                    th:style="${pageNo==totalPages-1?'background: gainsboro;':''}" th:text="${totalPages}"></a></li>
+                            <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo='+${pageNo+1}}"
+                                                     th:if="${pageNo<totalPages-1}">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function updateStatus(username, status) {
+        if (status == true) {
+            checkActivate(username);
+        } else {
+            checkDelete(username);
+        }
+    }
+    function checkDelete(username) {
+        if (confirm("Bạn muốn khóa tài khoản người dùng?")) {
+            window.location.href = "/account" + "/delete?username=" + username;
+        } else {
+            var checkbox = document.getElementById("status" + username);
+            checkbox.checked = true;
+        }
+    }
+    function checkActivate(username) {
+        if (confirm("Bạn muốn mở khóa tài khoản người dùng?")) {
+            window.location.href = "/account/activate?username=" + username;
+        } else {
+            var checkbox = document.getElementById("status" + username);
+            checkbox.checked = false;
+        }
+    }
+    function resetForm() {
+        window.location.href = "/account";
+    }
+</script>
+<script th:src="@{../admin/vendors/js/vendor.bundle.base.js}"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<script src="../admin/js/jquery.cookie.js" type="text/javascript"></script>
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="../admin/js/off-canvas.js"></script>
+<script src="../admin/js/hoverable-collapse.js"></script>
+<script src="../admin/js/template.js"></script>
+</body>
+
+</html>

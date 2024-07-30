@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Đăng nhập</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{assets/images/favicon.svg}" />
+
+    <!-- ========================= CSS here ========================= -->
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/LineIcons.3.0.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/tiny-slider.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/glightbox.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-icon">
+                <span></span> <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- /End Preloader -->
+
+    <!-- Start Header Area -->
+    <header th:insert="publics/header.html"></header>
+    <!-- End Header Area -->
+
+    <!-- Start Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="breadcrumbs-content">
+                        <h1 class="page-title">Đăng nhập</h1>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12">
+                    <ul class="breadcrumb-nav">
+                        <li><a href="/"><i class="lni lni-home"></i>
+                                Trang chủ</a></li>
+                        <li>Đăng nhập</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumbs -->
+
+    <!-- Start Account Login Area -->
+    <div class="account-login section">
+        <div class="container">
+            
+            <div th:if="${verificationEmailSent}" class="success-container">
+                <div class="alert alert-info">Đăng ký thành công! Vui lòng kiểm tra email của bạn để xác minh.</div>
+            </div>
+
+            <div th:if="${verificationSuccess}" class="success-container">
+                <div class="alert alert-info">Tài khoản của bạn đã được xác minh. Bây giờ bạn có thể đăng nhập bằng tên người
+                    dùng và mật khẩu của bạn.</div>
+            </div>
+
+            <div th:if="${accountCreated}" class="success-container">
+                <div class="alert alert-info">Tài khoản của bạn đã được tạo. Bây giờ bạn có thể đăng nhập bằng tên người
+                    dùng và mật khẩu của bạn.</div>
+            </div>
+
+            <div th:if="${passwordResetted}" class="success-container">
+                <div class="alert alert-info">Mật khẩu của bạn đã được đặt lại. Bây giờ bạn có thể đăng nhập bằng tên
+                    người dùng và mật khẩu mới.</div>
+            </div>
+
+            <div th:if="${limitEnterUser}" class="success-container">
+                <div class="alert alert-info">Bạn đã đăng nhập sai 5 lần liên tục, vui lòng đợi 5 phút để thử lại.</div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+                    <form action="/login/post" class="card login-form" id="login-form" method="post"
+                        th:object="${userLoginRequestDto}">
+                        <div class="card-body">
+                            <div class="title">
+                                <h3>Đăng nhập</h3>
+                            </div>
+
+                            <div class="form-group input-group">
+                                <label for="reg-username">Tên đăng nhập</label>
+                                <input th:value="*{userName}" class="form-control" name="userName" type="text"
+                                    id="reg-username" required>
+                            </div>
+                            <div class="form-group input-group">
+                                <label for="reg-pass">Mật khẩu</label>
+                                <input th:value="*{password}" class="form-control" name="password" type="password"
+                                    id="reg-pass" required>
+                                <!--                            <input th:value="*{password}" class="form-control" name="password" type="password" id="reg-pass" hidden>-->
+                            </div>
+
+                            <div class="form-group" style="text-align: right; margin-right: 5px;">
+                                <p class="text-danger" th:errors="*{userName}" th:if="${#fields.hasErrors('userName')}">
+                                </p>
+                                <p class="text-danger" th:errors="*{password}" th:if="${#fields.hasErrors('password')}">
+                                </p>
+                            </div>
+
+                            <!-- Captcha -->
+                            <div th:insert="~{publics/captcha.html}"></div>
+                            <!-- End Captcha -->
+
+                            <!-- Id -->
+                            <div>
+                                <input hidden="hidden" name="idCaptcha" th:value="${idCaptcha}" type="text" />
+                            </div>
+                            <!-- End Id -->
+
+                            <div class="d-flex flex-wrap justify-content-between bottom-content">
+                                <div class="form-check">
+                                    <input class="form-check-input width-auto" id="remember-me" name="rememberMe"
+                                        type="checkbox" value="true"> <label class="form-check-label"
+                                        for="remember-me">Nhớ tài khoản</label>
+                                </div>
+                                <a class="lost-pass" th:href="@{/forgotPassword}">
+                                    Quên mật khẩu?
+                                </a>
+                            </div>
+
+                            <div class="button">
+                                <button class="btn" type="submit">Đăng nhập</button>
+                            </div>
+
+                            <div class="alt-option">
+                                <span>Hoặc</span>
+                            </div>
+                            <div class="social-login">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-12">
+                                        <a class="btn google-btn" th:href="@{/oauth2/login}"><i
+                                                class="lni lni-google"></i>Đăng nhập bằng google</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="outer-link">
+                                Bạn chưa có tài khoản? <a href="/register">Đăng ký!
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Account Login Area -->
+    <footer class="footer" th:insert="publics/footer.html">
+
+    </footer>
+    <!-- ========================= scroll-top ========================= -->
+    <a class="scroll-top" href="#"> <i class="lni lni-chevron-up"></i>
+    </a>
+
+    <!-- ========================= JS here ========================= -->
+    <script th:src="@{/assets/js/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/js/tiny-slider.js}"></script>
+    <script th:src="@{/assets/js/glightbox.min.js}"></script>
+    <script th:src="@{/assets/js/main.js}"></script>
+</body>
+
+</html>

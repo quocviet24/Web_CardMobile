@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Danh sách đơn hàng</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.svg" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/LineIcons.3.0.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/tiny-slider.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/glightbox.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+
+    <!-- Custom CSS for Pagination -->
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px;
+        }
+         .spinner-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Disable form fields and button */
+        .disabled-form {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+    </style>
+</head>
+
+<body>
+<div id="loadingSpinner" class="spinner-wrapper" style="display: none;">
+    <div class="spinner"></div>
+</div>
+<!-- Start Header Area -->
+<header th:insert="../templates/publics/header.html"></header>
+<!-- End Header Area -->
+
+<!-- Start Breadcrumbs -->
+<div class="breadcrumbs">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="breadcrumbs-content">
+                    <h1 class="page-title">Danh sách đơn hàng</h1>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12">
+                <ul class="breadcrumb-nav">
+                    <li><a href="/"><i class="lni lni-home"></i> Trang chủ</a></li>
+                    <li>Danh sách đơn hàng</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumbs -->
+
+    <!-- Start Order List Area -->
+    <div class="order-list section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12 col-12">
+                    <div class="order-list-content">
+                        <div class="title mb-4">
+                            <h3>Danh sách mua hàng</h3>
+                            <p>Đây là các đơn hàng bạn đã đặt</p>
+                        </div>
+                        <!--filter-->
+                        <div class="filter">
+                            <form th:action="@{/order/filter}" method="get">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="status">Trạng thái</label>
+                                            <select class="form-control" id="status" name="status" onchange="this.form.submit()">
+                                                <option value="all">Tất cả</option>
+
+                                                <option value="Completed" th:selected="${status == 'Completed'}">Completed
+                                                </option>
+                                                <option value="Pending" th:selected="${status == 'Pending'}">Pending</option>
+                                                <option value="Cancel" th:selected="${status == 'Cancel'}">Cancel
+                                                </option>
+                                                <option value="Reject" th:selected="${status == 'Reject'}">Reject
+                                                </option>
+                                                <option value="Error" th:selected="${status == 'Error'}">Error
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <hr/>
+                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                            <p th:text="${error}"></p>
+                        </div>
+                        <div>
+                            <table th:hidden="${orders.isEmpty()}" class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col">Mã đơn hàng</th>
+                                        <th scope="col">Ngày Mua</th>
+                                        <th scope="col">Trạng Thái</th>
+                                        <th scope="col">Tổng Tiền</th>
+                                        <th scope="col">Chi Tiết</th>
+                                        <th scope="col">Trạng thái</th>
+                                        <th scope="col">Ghi chú</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${orders}">
+                                        <td th:text="${order.id}"></td>
+                                        <td th:text="${order.orderDate}"></td>
+                                        <td th:text="${order.status}"></td>
+                                        <td
+                                            th:text="${#numbers.formatDecimal(order.totalMoney, 1, 'POINT', 0, 'COMMA')} + ' VND'">
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-primary btn-sm"
+                                                th:href="@{/order/detail(id=${order.id})}">Chi Tiết</a>
+                                        </td>
+                                        <td th:if="${order.status == 'Pending'}">
+                                            <form th:action="@{/order/repurchase}" method="post" id="repurchaseForm">
+                                                <input type="hidden" name="id" th:value="${order.id}" />
+                                                <button type="submit" class="btn btn-primary btn-sm" id="paymentButton">Tiếp tục thanh toán</button>
+                                            </form>
+                                        </td>
+                                        <td th:if="${order.status != 'Pending'}">
+                                            <p>   </p>
+                                        </td>
+                                        <td th:text="${order.note}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <!-- Thay thế đoạn này bằng mã Thymeleaf -->
+                                <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo='+${pageNo-1}}"
+                                        th:if="${pageNo>0}">Previous</a></li>
+                                <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo=0'}"
+                                        th:style="${pageNo==0?'background: gainsboro;':''}">1</a></li>
+                                <li class="page-item" th:if="${pageNo-1>0}"><a class="page-link"
+                                        style="display: inline-block;" th:href="@{${action}+'pageNo='+${pageNo-2}}"
+                                        th:if="${pageNo-2>0}">...</a><a class="page-link" style="display: inline-block;"
+                                        th:href="@{${action}+'pageNo='+${pageNo-1}}" th:text="${pageNo}"></a></li>
+                                <li class="page-item" th:if="${pageNo!=0 }"><a class="page-link" href="#"
+                                        style="background: gainsboro;" th:text="${pageNo+1}"></a></li>
+                                <li class="page-item" th:if="${pageNo+2<totalPages}"><a class="page-link"
+                                        style="display: inline-block;" th:href="@{${action}+'pageNo='+${pageNo+1}}"
+                                        th:text="${pageNo+2}"></a><a class="page-link" style="display: inline-block;"
+                                        th:href="@{${action}+'pageNo='+${pageNo+2}}"
+                                        th:if="${pageNo+3<totalPages}">...</a></li>
+                                <li class="page-item" th:if="${totalPages-pageNo>1}"><a class="page-link"
+                                        th:href="@{${action}+'pageNo='+${totalPages-1}}"
+                                        th:style="${pageNo==totalPages-1?'background: gainsboro;':''}"
+                                        th:text="${totalPages}"></a></li>
+                                <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo='+${pageNo+1}}"
+                                        th:if="${pageNo<totalPages-1}">Next</a></li>
+                                <!-- Kết thúc thay thế -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Order List Area -->
+    <footer class="footer" th:insert="publics/footer.html"></footer>
+
+<!-- JS -->
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/tiny-slider.js"></script>
+<script src="assets/js/glightbox.min.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Hide spinner on page load
+    document.getElementById('loadingSpinner').style.display = 'none';
+
+    // Show spinner and disable form only on button click
+    document.getElementById('paymentButton').addEventListener('click', function (event) {
+        // Prevent the default form submission to manually handle the display
+        event.preventDefault();
+
+        // Show the spinner
+        document.getElementById('loadingSpinner').style.display = 'flex';
+
+        // Disable the form and button
+        var form = document.getElementById('repurchaseForm');
+        form.classList.add('disabled-form');
+
+        // Optionally, submit the form after a delay if needed
+        setTimeout(function() {
+            form.submit();
+        }, 100);  // Adjust the delay as needed
+    });
+});
+</script>
+</body>
+
+</html>

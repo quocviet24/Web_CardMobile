@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Danh sách nhà phát hành</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}"/>
+
+    <style>
+        .publisher-image {
+        width: 50%;
+        height: auto; /* Tự động điều chỉnh chiều cao dựa trên chiều rộng */
+        margin-bottom:15px;
+        padding: 20px;
+        
+    }
+    .publisher-container {
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #000;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 255, 0, 0.5);
+    border-radius: 20px;
+    margin-bottom: 70px;
+}
+        .title {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        font-size: 2.5em; /* Điều chỉnh kích thước của chữ */
+        text-align: center; /* Căn giữa chữ */
+    }
+
+        select {
+        width: 200px;
+        height: 35px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin: 20px 0;
+        padding: 5px;
+        font-size: 16px;
+        color: #333;
+    }
+    </style>
+
+</head>
+
+<body>
+<div class="container-scroller d-flex">
+    <!-- partial:../../partials/_sidebar.html -->
+    <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:./partials/_navbar.html -->
+        <div th:insert="../templates/pages/navbar.html"></div>
+        <h1 class="title"><strong>Danh sách nhà phát hành</strong></h1>
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-sm btn-outline-success"
+                    onclick="window.location.href='/publisher/add'">Thêm nhà phát hành mới</button>
+        </div>
+        <br><br>
+
+        <div style="margin-left:20px" >
+        <form action="#" th:action="@{/publisher/filter}" method="get">
+            <select name="status" onchange="this.form.submit()">
+                <option th:selected="${status == 'default'}" value="default">Tất cả nhà phát hành</option>
+                <option th:selected="${status == 'active'}" value="active">Nhà phát hành đang hoạt động</option>
+                <option th:selected="${status == 'inactive'}" value="inactive">Nhà phát hành đã dừng hoạt động</option>
+            </select>
+        </form>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div th:each="publisher : ${listPublisher}"
+                     class="col-md-4 d-flex align-items-center justify-content-center">
+                    <div th:style="${publisher.isDeleted}? 'box-shadow: 0px 0px 10px rgba(255, 0, 0, 0.5)'" class="publisher-container">
+                        <h2 th:text="${publisher.name}"></h2>
+                        <img th:src="@{'/assets/images/publisher/' + ${publisher.image}}" class="img-fluid publisher-image" alt="...">
+                        <div>
+                            <a class="btn btn-primary btn-sm"
+                               th:href="@{/publisher/update(id=${publisher.id})}">Sửa</a>
+                            <a style="text-color:while;" th:if="${!publisher.isDeleted}" class="btn btn-danger btn-sm" th:href="@{/publisher/delete(id=${publisher.id})}"
+                               onclick="return confirm('Bạn chắc chứ?')">Dừng hoạt động</a>
+                            <a th:if="${publisher.isDeleted}" class="btn btn-success btn-sm" th:href="@{/publisher/active(id=${publisher.id})}"
+                               onclick="return confirm('Bạn chắc chứ?')">Hoạt động lại</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script th:src="@{../admin/vendors/js/vendor.bundle.base.js}"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<script src="../admin/js/jquery.cookie.js" type="text/javascript"></script>
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="../admin/js/off-canvas.js"></script>
+<script src="../admin/js/hoverable-collapse.js"></script>
+<script src="../admin/js/template.js"></script>
+<!-- endinject -->
+<!-- plugin js for this page -->
+<!-- End plugin js for this page -->
+<!-- Custom js for this page-->
+<!-- End custom js for this page-->
+</body>
+
+</html>

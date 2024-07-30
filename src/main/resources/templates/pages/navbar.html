@@ -1,0 +1,68 @@
+<nav class="navbar navbar-expand-lg px-3 py-2" style="height: 80px;">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center">
+            <!-- Offcanvas Button -->
+            <button class="btn btn-link me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+                <i class="mdi mdi-menu"></i>
+            </button>
+            <!-- Logo -->
+            <a class="navbar-brand" href="/">
+                <img th:src="@{/assets/images/logo/logo.svg}" alt="Logo" style="height: 40px; width: auto;">
+            </a>
+        </div>
+
+        <!-- Welcome Text -->
+        <h4 class="font-weight-bold mb-0 d-none d-lg-block text-center">
+            Welcome back, <span th:text="${session.user_sess.firstName}"></span>
+        </h4>
+
+        <!-- Buttons -->
+        <div class="d-flex align-items-center">
+            <button class="btn btn-link me-3" type="button" onclick="window.location.href='/' " style="text-decoration: none;">
+                <i class="mdi mdi-settings text-primary"></i> Trang chủ
+            </button>
+            <button class="btn btn-link" type="button" onclick="window.location.href='/logout' " style="text-decoration: none;">
+                <i class="mdi mdi-logout text-primary"></i> Đăng xuất
+            </button>            
+        </div>
+    </div>
+</nav>
+<style>
+ /* Ensure the sidebar is visible on smaller screens */
+@media (max-width: 980px) {
+  .sidebar {
+    display: block !important; /* Ensure the sidebar is displayed */
+    position: fixed !important; /* Ensure the sidebar is fixed */
+    background-color: #223E9C; /* Set background color */
+    z-index: 9999; /* Ensure it is above other elements */
+    width: 250px; /* Set appropriate width */
+    height: 100%; /* Full height */
+    overflow-y: auto; /* Allow scrolling if needed */
+    left: 0; /* Ensure sidebar is aligned to the left */
+    transform: translateX(0) !important; /* Ensure the sidebar is fully visible */
+  }
+  .offcanvas {
+    background-color: #223E9C;
+  }
+
+  .sidebar.sidebar-offcanvas {
+    transform: translateX(0) !important; /* Ensure the sidebar is fully visible */
+  }
+
+  .main-panel {
+    margin-left: 250px; /* Adjust based on sidebar width */
+  }
+}
+
+</style>
+<script>
+ document.addEventListener('DOMContentLoaded', function() {
+  const sidebarToggle = document.querySelector('#sidebarToggle');
+  const sidebar = document.querySelector('#sidebar');
+
+  sidebarToggle.addEventListener('click', function() {
+    sidebar.classList.toggle('active');
+  });
+});
+
+</script>

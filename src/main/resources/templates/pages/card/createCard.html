@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tạo tài khoản</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}" />
+</head>
+
+<body>
+    <div class="container-scroller d-flex">
+        <!-- partial:../../partials/_sidebar.html -->
+        <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper" style="margin-left: 16%">
+            <!-- partial:./partials/_navbar.html -->
+            <div th:insert="../templates/pages/navbar.html"></div>
+            <div class="account-login section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+                            <div class="register-form">
+                                <h1 style="text-align: center;" class="title"><strong>Tạo loại thẻ mới</strong></h1>
+                                <!--missing id of form-->
+                                <form id="form-create" class="row" method="post" action="/cardAdmin/create"
+                                    th:object="${card}">
+
+                                    <div class="form-group">
+                                        <label for="seriNumber" class="required">Số seri</label>
+                                        <input th:value="*{seriNumber}" class="form-control" type="text" id="seriNumber"
+                                               name="seriNumber" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="cardNumber" class="required">Mã thẻ</label>
+                                        <input th:value="*{cardNumber}" class="form-control" type="text" id="cardNumber"
+                                               name="cardNumber" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="cardTypeId" class="required">Loại thẻ</label>
+                                        <select th:value="*{cardType}" class="form-control" id="cardType" name="cardType" required>
+                                            <option value="" disabled selected>Chọn loại thẻ</option>
+                                            <option th:each="cardType : ${listCT}" th:value="${cardType.id}" th:text="${cardType.publisher.name} + ' ' + ${cardType.unitPrice}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="expiryDate" class="required">Ngày hết hạn</label>
+                                        <input th:value="*{expiryDate}" class="form-control" type="date" id="expiryDate"
+                                               name="expiryDate" required>
+                                    </div>
+
+                                    <div th:if="${error != null}">
+                                        <p th:text="${error}" class="text-danger"></p>
+                                    </div>
+
+                                    <div class="button">
+                                        <button class="btn btn-outline-primary" onclick="submitForm('form-create')"
+                                            type="button">Tạo thẻ mới</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function submitForm(formId) {
+            let seriNumber = document.getElementById("seriNumber").value;
+            let cardNumber = document.getElementById("cardNumber").value;
+            let cardType = document.getElementById("cardType").value;
+            let expiryDate = document.getElementById("expiryDate").value;
+
+            if (seriNumber == '') {
+                window.alert('seriNumber is required');
+                return;
+            }
+            if (cardNumber == '') {
+                window.alert('seriNumber is required');
+                return;
+            }
+
+            if (cardType == '') {
+                window.alert('cardType is required');
+                return;
+            }
+
+            if (expiryDate == '') {
+                window.alert('expiryDate is required');
+                return;
+            }
+
+            let currentDate = new Date();
+            let expiredDate = new Date(expiryDate);
+            if (expiredDate <= currentDate) {
+                window.alert('expiryDate is not valid');
+                return;
+            }
+
+            var form = document.getElementById(formId);
+            form.submit();
+        }
+    </script>
+</body>
+
+</html>

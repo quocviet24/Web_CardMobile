@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Loại thẻ</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}"/>
+</head>
+
+<body>
+<div class="container-scroller d-flex">
+    <!-- partial:../../partials/_sidebar.html -->
+    <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:./partials/_navbar.html -->
+        <div th:insert="../templates/pages/navbar.html"></div>
+
+        <h1 style="text-align: center; margin-top: 50px;" class="title"><strong>Phân loại thẻ</strong></h1>
+        <br>
+
+        <!--search and filter-->
+        <div class="row" style="text-align: center;">
+            <div class="col-sm-3">
+                <button class="btn btn-sm btn-outline-success" onclick="window.location.href='/cardType/create'">Tạo
+                    loại thẻ mới
+                </button>
+            </div>
+            <div class="col-sm-9">
+                <form th:action="@{/cardType/filter}" action="/cardType/filter" method="get">
+                    <div class="row" style="display: flex; align-items: center; justify-content: space-around">
+                        <div class="select-field col-sm-4" style="display: flex; align-items: center">
+                            <label for="publisher-filter">Nhà phát hành</label>
+                            <select class="form-select" name="publisher" id="publisher-filter"
+                                    onchange="this.form.submit()">
+                                <option value="0" th:selected="${publisher == 'default'}">Tất cả</option>
+                                <option value="viettel" th:selected="${publisher == 'viettel'}">Viettel</option>
+                                <option value="vinaphone" th:selected="${publisher == 'vinaphone'}">Vinaphone</option>
+                                <option value="mobifone" th:selected="${publisher == 'mobifone'}">Mobifone</option>
+                            </select>
+                        </div>
+
+                        <div class="select-field col-sm-4" style="display: flex; align-items: center">
+                            <label for="status-filter">Trạng thái</label>
+                            <select class="form-select" name="status" id="status-filter"
+                                    onchange="this.form.submit()">
+                                <option value="default" th:selected="${status == 'default'}">Tất cả</option>
+                                <option value="deactive" th:selected="${status == 'deactive'}">Ngưng hoạt động</option>
+                                <option value="active" th:selected="${status == 'active'}">Đang hoạt động</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-12">
+                    <div th:if="${listCT!=null}">
+                        <table class="col-sm-8 table table-striped table-hover">
+                            <tr>
+                                <th>Trạng thái</th>
+                                <th>Nhà phát hành</th>
+                                <th>Giá bán</th>
+                                <th>SL kho</th>
+                                <th>Đã bán</th>
+                                <th>Chi tiết</th>
+                            </tr>
+                            <div class="container-fluid">
+                                <div th:each="cardType : ${listCT}">
+                                    <tr>
+                                        <td>
+                                            <div class="form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                       th:checked="${!cardType.publisher.isDeleted} ? (${!cardType.isDeleted} ? 'true' : 'false') : 'false'"
+                                                       th:id="'status'+${cardType.id}"
+                                                       th:onchange="setActive([[${cardType.id}]],[[${cardType.isDeleted}]])">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span
+                                               th:text="${cardType.publisher.name}"></span>
+                                        </td>
+                                        <td>
+                                            <p th:text="${#numbers.formatDecimal(cardType.unitPrice, 1, 'POINT', 0, 'COMMA')} + ' VND'"></p>
+                                        </td>
+                                        <td>                                            <p th:text="${cardType.inStock}"></p>
+                                        </td>
+                                        <td>
+                                            <p th:text="${cardType.soldQuantity}"></p>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-sm btn-outline-success"
+                                               th:href="@{'/cardType/viewDetail?cardTypeId='+${cardType.id}}">Xem
+                                                thêm</a>
+                                        </td>
+                                    </tr>
+                                </div>
+                            </div>
+                        </table>
+                    </div>
+                    <span th:text="${error}" style="color: red;"></span>
+
+                    <hr>
+<!--                    <nav aria-label="Page navigation example">-->
+<!--                        <ul class="pagination">-->
+<!--                            <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo='+${pageNo-1}}"-->
+<!--                                                     th:if="${pageNo>0}">Previous</a></li>-->
+<!--                            <li class="page-item"><a class="page-link"-->
+<!--                                                     th:href="@{${action}+'pageNo=0'}"-->
+<!--                                                     th:style="${pageNo==0?'background: gainsboro;':''}">1</a></li>-->
+<!--                            <li class="page-item" th:if="${pageNo-1>0}"><a class="page-link"-->
+<!--                                                                           style="display: inline-block;"-->
+<!--                                                                           th:href="@{${action}+'pageNo='+${pageNo-2}}"-->
+<!--                                                                           th:if="${pageNo-2>0}">...</a><a-->
+<!--                                    class="page-link" style="display: inline-block;"-->
+<!--                                    th:href="@{${action}+'pageNo='+${pageNo-1}}" th:text="${pageNo}"></a></li>-->
+<!--                            <li class="page-item" th:if="${pageNo!=0 }"><a class="page-link"-->
+<!--                                                                           href="#" style="background: gainsboro;"-->
+<!--                                                                           th:text="${pageNo+1}"></a></li>-->
+<!--                            <li class="page-item" th:if="${pageNo+2<totalPages}"><a class="page-link"-->
+<!--                                                                                    style="display: inline-block;"-->
+<!--                                                                                    th:href="@{${action}+'pageNo='+${pageNo+1}}"-->
+<!--                                                                                    th:text="${pageNo+2}"></a><a-->
+<!--                                    class="page-link" style="display: inline-block;" th:href="@{${action}+'pageNo='+${pageNo+2}}"-->
+<!--                                    th:if="${pageNo+3<totalPages}">...</a></li>-->
+<!--                            <li class="page-item" th:if="${totalPages-pageNo>1}"><a-->
+<!--                                    class="page-link" th:href="@{${action}+'pageNo='+${totalPages-1}}"-->
+<!--                                    th:style="${pageNo==totalPages-1?'background: gainsboro;':''}" th:text="${totalPages}"></a></li>-->
+<!--                            <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo='+${pageNo+1}}"-->
+<!--                                                     th:if="${pageNo<totalPages-1}">Next</a></li>-->
+<!--                        </ul>-->
+<!--                    </nav>-->
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo='+${pageNo-1}}" th:if="${pageNo>0}">Previous</a></li>
+                            <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo=0'}" th:style="${pageNo==0?'background: gainsboro;':''}">1</a></li>
+                            <li class="page-item" th:if="${pageNo-1>0}"><a class="page-link" style="display: inline-block;" th:href="@{${action}+'pageNo='+${pageNo-2}}" th:if="${pageNo-2>0}">...</a><a class="page-link" style="display: inline-block;" th:href="@{${action}+'pageNo='+${pageNo-1}}" th:text="${pageNo}"></a></li>
+                            <li class="page-item" th:if="${pageNo!=0}"><a class="page-link" href="#" style="background: gainsboro;" th:text="${pageNo+1}"></a></li>
+                            <li class="page-item" th:if="${pageNo+2<totalPages}"><a class="page-link" style="display: inline-block;" th:href="@{${action}+'pageNo='+${pageNo+1}}" th:text="${pageNo+2}"></a><a class="page-link" style="display: inline-block;" th:href="@{${action}+'pageNo='+${pageNo+2}}" th:if="${pageNo+3<totalPages}">...</a></li>
+                            <li class="page-item" th:if="${totalPages-pageNo>1}"><a class="page-link" th:href="@{${action}+'pageNo='+${totalPages-1}}" th:style="${pageNo==totalPages-1?'background: gainsboro;':''}" th:text="${totalPages}"></a></li>
+                            <li class="page-item"><a class="page-link" th:href="@{${action}+'pageNo='+${pageNo+1}}" th:if="${pageNo<totalPages-1}">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function setActive(id, isDeleted) {
+        var s = isDeleted ? "kích hoạt" : "xóa";
+        var checkbox = document.getElementById("status" + id);
+        if (confirm("Bạn muốn " + s + " loại thẻ này?")) {
+            window.location.href = "/cardType/setActive?id=" + id + "&isDeleted=" + !isDeleted;
+        } else {
+            if (isDeleted) {
+                checkbox.checked = false;
+            } else {
+                checkbox.checked = true;
+            }
+        }
+    }
+
+    function resetForm() {
+        window.location.href = "/cardType";
+    }
+</script>
+<script th:src="@{../admin/vendors/js/vendor.bundle.base.js}"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<script src="../admin/js/jquery.cookie.js" type="text/javascript"></script>
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="../admin/js/off-canvas.js"></script>
+<script src="../admin/js/hoverable-collapse.js"></script>
+<script src="../admin/js/template.js"></script>
+</body>
+
+</html>

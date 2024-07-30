@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Cập nhật nhà phát hành</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}"/>
+
+</head>
+
+<body>
+<div class="container-scroller d-flex">
+    <!-- partial:../../partials/_sidebar.html -->
+
+    <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:./partials/_navbar.html -->
+        <div th:insert="../templates/pages/navbar.html"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto rounded border p-4 m-4">
+                    <h2 class="text-center md-5">Cập nhật thông tin nhà phát hành</h2>
+
+                    <form id="formID" enctype="multipart/form-data" method="post" th:object=${publisherDto}>
+                        <div class=row mb-3>
+                            <label class="col-sm-4 col-form-label">ID</label>
+                            <div class="col-sm-8">
+                                <input class="form-control-plaintext" readonly th:value="${publisher.id}">
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class=row mb-3>
+                            <label class="col-sm-4 col-form-label">Tên</label>
+                            <div class="col-sm-8">
+                                <input id="name" class="form-control" th:field="${publisherDto.name}">
+                                <p th:errorclass="text-danger" th:errors="${publisherDto.name}"
+                                   th:if="${#fields.hasErrors('name')}"></p>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row mb-3">
+                            <div class="offset-sm-4 col-sm-8">
+                                <img alt="..." th:src="@{'assets/images/publisher/' + ${publisher.image}}" width="300">
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label">Status</label>
+                            <div class="col-sm-8">
+                                <div class="form-check">
+                                    <input class="form-check-input" id="editInActiveOption" th:checked="${publisherDto.active == 'inactive'}"
+                                           th:field="${publisherDto.active}" type="radio"
+                                           value="inactive">
+                                    <label class="form-check-label">
+                                        Inactive
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" id="activeOption" th:checked="${publisherDto.active == 'active'}"
+                                           th:field="${publisherDto.active}" type="radio"
+                                           value="active">
+                                    <label class="form-check-label">
+                                        Active
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label">Ảnh</label>
+                            <div class="col-sm-8">
+                                <input id="image" class="form-control" th:field="${publisherDto.image}" type="file">
+                                <p th:errorclass="text-danger" th:errors="${publisherDto.image}"
+                                   th:if="${#fields.hasErrors('image')}"></p>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="offset-sm-4 col-sm-4 d-grid">
+                                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            </div>
+                            <div class="col-sm-4 d-grid">
+                                <a class="btn btn-outline-primary" href="/publisher" role="button">Hủy</a>
+                            </div>
+                        </div>
+                        <br>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-sm-flex justify-content-center justify-content-sm-between py-2">
+                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a
+                                href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a
+                                href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- partial -->
+    </div>
+</div>
+
+<!-- Plugin js for this page-->
+<script src="../admin/js/jquery.cookie.js" type="text/javascript"></script>
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="../admin/js/template.js"></script>
+<script>
+    function submitForm(event,formID){
+        let name = document.getElementById('name').value;
+        let image = document.getElementById('image').value;
+        if(name == ''){
+            window.alert('Name publisher is required');
+            event.preventDefault();
+            return;
+        }
+
+        var form = document.getElementById(formID);
+        form.submit();
+    }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="ie=edge" http-equiv="x-ua-compatible" />
+    <title>Cart</title>
+    <meta content="" name="description" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link href="assets/images/favicon.svg" rel="shortcut icon" type="image/x-icon" />
+
+    <!-- ========================= CSS here ========================= -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="assets/css/LineIcons.3.0.css" rel="stylesheet" />
+    <link href="assets/css/tiny-slider.css" rel="stylesheet" />
+    <link href="assets/css/glightbox.min.css" rel="stylesheet" />
+    <link href="assets/css/main.css" rel="stylesheet" />
+
+    <style>
+        .remove-item {
+            cursor: pointer;
+        }
+
+        #quantityInput {
+            width: 60px;
+            text-align: center;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+            color: white;
+            padding: 0.2em 0.6em;
+            border-radius: 0.25rem;
+            font-size: 0.75em;
+        }
+
+        /* Style for the "Đóng" button (adjust as needed) */
+        .btn-alt {
+            color: #fff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        /* Style for the "Xác nhận" button */
+        .btn-primary {
+            color: #fff;
+            background-color: #0167F3;
+            border-color: #0167F3;
+        }
+
+        /* Common button styles to match "Thanh toán" */
+        #checkoutModal .btn {
+            /* Target buttons within the modal */
+            display: inline-block;
+            text-transform: capitalize;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 13px 30px;
+            /* Match the "Thanh toán" button's padding */
+            border: none;
+            border-radius: 3px;
+            /* Match the "Thanh toán" button's radius */
+            position: relative;
+            /* These styles are likely inherited, but you can include them for consistency */
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Override conflicting styles */
+        #checkoutModal .btn {
+            width: auto;
+            /* Remove the 100% width */
+            margin-bottom: 0;
+            /* Remove the margin */
+        }
+
+        /* Hover effect for "Xác nhận" button */
+        #checkoutModal .btn-primary:hover {
+            background-color: black;
+            border-color: black;
+        }
+
+        /* Loading spinner style */
+        .spinner-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 60px;
+            height: 60px;
+            -webkit-animation: spin 2s linear infinite;
+            /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="spinner-wrapper" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-icon">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- /End Preloader -->
+
+    <!-- Start Header Area -->
+    <header th:insert="publics/header.html"></header>
+    <!-- End Header Area -->
+
+    <!-- Start Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="breadcrumbs-content">
+                        <h1 class="page-title">Cart</h1>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12">
+                    <ul class="breadcrumb-nav">
+                        <li><a href="/"><i class="lni lni-home"></i> Home</a></li>
+                        <li>Cart</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumbs -->
+
+    <!-- Shopping Cart -->
+    <div class="shopping-cart section">
+        <div class="container">
+            <div th:if="${cart != null and not cart.isEmpty()}">
+                <div class="cart-list-head">
+                    <!-- Cart List Title -->
+                    <div class="cart-list-title">
+                        <div class="row">
+                            <div class="col-lg-1 col-md-1 col-12">
+
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-12">
+
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-12">
+                                <p>Nhà phát hành</p>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-12">
+                                <p>Đơn giá</p>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-12">
+                                <p>Số lượng</p>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-12">
+                                <p>Thành tiền</p>
+                            </div>
+                            <div class="col-lg-1 col-md-2 col-12">
+                                <p>Thao tác</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Cart List Title -->
+                    <!-- Cart Single List list -->
+                    <div class="cart-single-list" th:each="cartItem : ${cart}">
+                        <div class="row align-items-center">
+                            <div class="col-lg-1 col-md-1 col-12">
+                                <input class="form-check-input" id="select-${cartItem.id}"
+                                    onchange="updateCheckoutButton(); calculateTotalPayment()"
+                                    th:checked="${!cartItem.cardType.publisher.isDeleted and !cartItem.cardType.isDeleted}"
+                                    th:if="${!cartItem.cardType.publisher.isDeleted and !cartItem.cardType.isDeleted and cartItem.cardType.inStock > 0}"
+                                    type="checkbox">
+                                <span class="badge badge-danger"
+                                    th:if="${cartItem.cardType.publisher.isDeleted or cartItem.cardType.isDeleted or cartItem.cardType.inStock <= 0}">Hết
+                                    hàng</span>
+                            </div>
+
+                            <div class="col-lg-1 col-md-1 col-12">
+                                <img th:alt="${cartItem.cardType.publisher.name}"
+                                    th:src="@{'assets/images/publisher/' + ${cartItem.cardType.publisher.image}}">
+                            </div>
+
+                            <div class="col-lg-3 col-md-3 col-12">
+                                <h5 class="product-name">
+                                    <p th:text="${cartItem.cardType.publisher.name}"></p>
+                                </h5>
+                            </div>
+
+                            <div class="col-lg-2 col-md-2 col-12">
+                                <input class="dongia" hidden th:value="${cartItem.cardType.unitPrice}" />
+                                <p
+                                    th:text="${#numbers.formatDecimal(cartItem.cardType.unitPrice, 1, 'POINT', 0, 'COMMA')} + ' VND'">
+                                </p>
+                            </div>
+
+                            <div class="col-lg-2 col-md-2 col-12">
+                                <input class="cardTypeId" name="cardTypeId" th:value="${cartItem.cardType.id}"
+                                    type="hidden">
+                                <input class="quantityInput" id="quantityInput" min="1" name="quantity" required
+                                    th:data-total="${cartItem.cardType.unitPrice}"
+                                    th:if="${!cartItem.cardType.publisher.isDeleted and !cartItem.cardType.isDeleted and cartItem.cardType.inStock != 0}"
+                                    th:max="${cartItem.cardType.inStock}" th:value="${cartItem.quantity}" type="number">
+                                <input class="quantityInput" disabled id="quantityInput" max="0" min="1" name="quantity"
+                                    required
+                                    th:if="${cartItem.cardType.publisher.isDeleted or cartItem.cardType.isDeleted or cartItem.cardType.inStock == 0}"
+                                    th:value="0" type="number">
+                                <div class="invalid-feedback" id="quantityError" style="display: none;">Please enter a
+                                    valid quantity.
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-md-2 col-12">
+                                <p class="total"
+                                    th:text="${#numbers.formatDecimal(cartItem.getTotal, 1, 'POINT', 0, 'COMMA')} + ' VND'">
+                                </p>
+                            </div>
+
+                            <div class="col-lg-1 col-md-2 col-12">
+                                <a class="remove-item" onclick="handleDeleteCartItem(this)"
+                                    th:data-cart-item-id="${cartItem.id}"><i class="lni lni-close"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Single List list -->
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Total Amount -->
+                        <div class="total-amount">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-4 col-md-6 col-12">
+                                    <div class="right">
+                                        <ul>
+                                            <li><b>Tổng thanh toán</b><span id="subtotal" value=""></span></li>
+                                        </ul>
+                                        <div class="button">
+                                            <a class="btn btn-primary disabled" href="#" id="checkoutButton">Thanh
+                                                toán</a>
+                                            <a class="btn btn-alt" href="/#featured-categories">Tiếp tục mua hàng</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/ End Total Amount -->
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${cart == null or cart.isEmpty()}">
+                <div class="alert alert-info" role="alert">
+                    Giỏ hàng trống.
+                </div>
+                <div class="button">
+                    <a class="btn btn-alt" href="/#featured-categories">Tiếp tục mua hàng</a>
+                </div>
+            </div>
+            <span style="color: red;" th:text="${errorNotStock}"></span>
+
+        </div>
+    </div>
+    <!--/ End Shopping Cart -->
+
+    <!-- Prior-checkout Modal -->
+    <div aria-hidden="true" aria-labelledby="checkoutModalLabel" class="modal fade" id="checkoutModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="/create-payment-link" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="checkoutModalLabel">Xác nhận thanh toán</h5>
+                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nhà phát hành</th>
+                                    <th>Số lượng</th>
+                                    <th>Đơn giá</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalCartItems"></tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-alt" data-bs-dismiss="modal" type="button">Đóng</button>
+                        <button class="btn btn-primary" id="" type="submit">Xác nhận</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End prior-checkout modal -->
+
+    <!-- jQuery import -->
+    <script crossorigin="anonymous" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+        src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        // 1. Delete cart item
+        function handleDeleteCartItem(anchor) {
+            let text = "Bạn có chắc muốn xóa thẻ này không?";
+            if (confirm(text) == true) {
+                const cartItemId = anchor.dataset.cartItemId;
+                fetch('/cart/delete?cartItemId=' + cartItemId, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.redirected) {
+                            window.location.href = response.url; // Redirect to cart page after deletion
+                        }
+                    });
+            }
+        }
+
+        // 2. Show checkout modal with selected products
+        $("#checkoutButton").click(function (event) {
+            if ($(this).hasClass("disabled")) {
+                event.preventDefault();
+            } else {
+                event.preventDefault();
+                var checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+                $("form[action='/create-payment-link'] input[type='hidden']").remove();
+                $("#modalCartItems").empty();
+                var total = 0;
+
+                $("input[type='checkbox']:checked").each(function () {
+                    var row = $(this).closest('.row');
+                    var publisherName = row.find('.product-name p').text();
+                    var quantity = row.find('.quantityInput').val();
+                    var unitPrice = parseInt(row.find('.dongia').val());
+
+                    var publisherNameField = $("<input>").attr("type", "hidden").attr("name", "publisherName").val(publisherName);
+                    var quantityField = $("<input>").attr("type", "hidden").attr("name", "quantity").val(quantity);
+                    var unitPriceField = $("<input>").attr("type", "hidden").attr("name", "unitPrice").val(unitPrice);
+
+                    $("form[action='/create-payment-link']").append(publisherNameField, quantityField, unitPriceField);
+
+                    var itemTotal = quantity * unitPrice;
+                    total += itemTotal;
+
+                    var newRow = $("<tr></tr>");
+                    newRow.append($("<td></td>").text(publisherName));
+                    newRow.append($("<td></td>").text(quantity));
+                    newRow.append($("<td></td>").text(unitPrice.toLocaleString('de-DE') + ' VND'));
+                    newRow.append($("<td></td>").text(itemTotal.toLocaleString('de-DE') + ' VND'));
+
+                    $("#modalCartItems").append(newRow);
+                });
+
+                var totalRow = $("<tr></tr>");
+                totalRow.append($("<td></td>").attr('colspan', '3').text('Tổng cộng'));
+                totalRow.append($("<td></td>").text(total.toLocaleString('de-DE') + ' VND'));
+                $("#modalCartItems").append(totalRow);
+
+                checkoutModal.show();
+            }
+        });
+
+        // 3. Calculate total payment
+        function calculateTotalPayment() {
+            var totalPayment = 0;
+            $("input[type='checkbox']:checked").each(function () {
+                var row = $(this).closest('.row');
+                var quantity = parseInt(row.find('.quantityInput').val()) || 0;
+                var unitPrice = parseInt(row.find('.dongia').val()) || 0;
+                totalPayment += quantity * unitPrice;
+            });
+            $("#subtotal").text(totalPayment.toLocaleString('de-DE') + ' VND');
+            updateCheckoutButton();
+        }
+
+        // 4. Update total price for each product
+        function updateTotalPrice() {
+            $(".cart-single-list").each(function () {
+                var quantity = $(this).find(".quantityInput").val();
+                var unitPrice = $(this).find(".dongia").val().replace(' VND', '').replace(',', '');
+                var totalPrice = quantity * unitPrice;
+                $(this).find(".total").text(totalPrice.toLocaleString('de-DE') + ' VND');
+            });
+        }
+
+        // 5. Update quantity in cart and database
+        function updateQuantityInCartAndDatabase() {
+            $(".quantityInput").on("change blur", function () {
+                var quantityInput = $(this);
+                var newQuantity = quantityInput.val();
+                var cardTypeId = quantityInput.closest('.cart-single-list').find('.cardTypeId').val();
+
+                var unitPrice = quantityInput.data("total");
+                var newSubtotal = newQuantity * unitPrice;
+                var formattedSubtotal = Intl.NumberFormat('de-DE').format(newSubtotal) + " VND";
+                quantityInput.closest('.cart-single-list').find(".total").text(formattedSubtotal);
+                calculateTotalPayment();
+
+                $.ajax({
+                    url: "/cart/updateQuantity",
+                    type: "POST",
+                    data: {
+                        quantity: newQuantity,
+                        cardTypeId: cardTypeId
+                    },
+                    success: function (response) {
+                        // Optionally, handle success response from the backend if needed
+                    },
+                    error: function (error) {
+                        console.error("Error updating quantity:", error);
+                        // You could revert the quantity in the frontend here if the update failed
+                    }
+                });
+            });
+        }
+
+        // 6. Update checkout button state
+        function updateCheckoutButton() {
+            var hasCheckedItems = false;
+            $(".cart-single-list").each(function () {
+                var checkbox = $(this).find(".form-check-input");
+                if (checkbox.prop("checked")) {
+                    hasCheckedItems = true;
+                    return false; // Exit the loop early if any checkbox is checked
+                }
+            });
+            $("#checkoutButton").toggleClass("disabled", !hasCheckedItems);
+        }
+
+        // Document ready initialization
+        $(document).ready(function () {
+            calculateTotalPayment();
+            updateCheckoutButton();
+            updateQuantityInCartAndDatabase();
+        });
+
+        // Event bindings
+        $(".quantityInput").change(function () {
+            updateTotalPrice();
+        });
+        $(".form-check-input").change(function () {
+            calculateTotalPayment();
+            updateCheckoutButton();
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hide spinner on page load
+            document.getElementById('loadingSpinner').style.display = 'none';
+
+            // Show spinner on form submission
+            document.querySelector('form[action="/create-payment-link"]').addEventListener('submit', function () {
+                document.getElementById('loadingSpinner').style.display = 'flex';
+            });
+        });
+
+    </script>
+
+
+    <!-- Start Footer Area -->
+    <footer class="footer" th:insert="publics/footer.html">
+
+    </footer>
+    <!--/ End Footer Area -->
+
+    <!-- ========================= scroll-top ========================= -->
+    <a class="scroll-top" href="#">
+        <i class="lni lni-chevron-up"></i>
+    </a>
+
+    <!-- ========================= JS here ========================= -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/tiny-slider.js"></script>
+    <script src="assets/js/glightbox.min.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

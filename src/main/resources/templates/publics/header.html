@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<style>
+    .shopping-list .product-name {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .shopping-item .content {
+        flex-grow: 1;
+        padding-right: 20px;
+    }
+
+    .shopping-item .product-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 5px;
+    }
+
+    .shopping-item .product-name a {
+        color: #333;
+        text-decoration: none;
+    }
+
+    .shopping-item li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #e1e1e1;
+    }
+
+    .shopping-item .remove {
+        flex-shrink: 0;
+    }
+
+    .shopping-item .quantity {
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .shopping-item .amount {
+        font-weight: bold;
+    }
+</style>
+<!-- Start Topbar -->
+<header class="header navbar-area">
+    <div class="topbar">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 col-md-4 col-12">
+
+                </div>
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="top-middle">
+                        <ul class="useful-links">
+                            <li><a href="/">Trang chủ</a></li>
+                            <li><a href="/order">Lịch sử mua hàng</a></li>
+                            <li th:if="${session.user_sess!=null&&session.user_sess.roleId == 1}"><a href="/admin">Trang
+                                quản trị viên</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="top-end">
+
+                        <div class="user" th:if="${session.user_sess == null}">
+                            <i class="lni lni-user"></i> Hello
+                        </div>
+                        <div class="user" th:if="${session.user_sess != null}">
+                            <i class="lni lni-user"></i> <a href="/profile"><span
+                                    th:text="${session.user_sess.firstName}"></span></a>
+                        </div>
+                        <ul class="user-login">
+                            <li th:if="${session.user_sess != null}"><a href="/logout">Đăng xuất</a></li>
+                            <li th:if="${session.user_sess == null}"><a href="/login">Đăng nhập</a></li>
+                            <li th:if="${session.user_sess == null}"><a href="/register">Đăng ký</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Topbar -->
+    <!-- Start Header Middle -->
+    <div class="header-middle">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-lg-3 col-md-3 col-7">
+                    <!-- Start Header Logo -->
+                    <a class="navbar-brand" href="/">
+                        <img th:src="@{/assets/images/logo/logo.svg}" alt="Logo">
+                    </a>
+                    <!-- End Header Logo -->
+                </div>
+                <div class="col-lg-3 col-md-3 col-5 text-end">
+                    <div class="middle-right-area">
+                        <div class="nav-hotline d-none d-lg-flex justify-content-end">
+                            <i class="lni lni-phone"></i>
+                            <h3>Hotline: <span>(+84) 898 756 885</span></h3>
+                        </div>
+                        <div class="navbar-cart">
+                            <div class="cart-items">
+                                <a href="/cart" class="main-btn">
+                                    <i class="lni lni-cart"></i>
+                                    <span class="total-items">0</span>
+                                </a>
+                                <div class="shopping-item">
+                                    <div class="dropdown-cart-header">
+                                        <span id="cartItemCount">0 Items</span>
+                                    </div>
+                                    <ul class="shopping-list" id="shoppingList">
+                                        <!-- Cart items will be inserted here dynamically -->
+                                    </ul>
+                                    <div class="bottom">
+                                        <div class="total">
+                                            <span>Total</span>
+                                            <span class="total-amount" id="cartTotal">0 VND</span>
+                                        </div>
+                                        <div class="button">
+                                            <a href="/cart" class="btn animate">Xem giỏ hàng</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Header Middle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cartIcon = document.querySelector('.navbar-cart .main-btn');
+            const shoppingItem = document.querySelector('.shopping-item');
+
+            // Function to update cart
+            function updateCart() {
+                fetch('/cart/items')
+                    .then(response => response.json())
+                    .then(data => {
+                        const shoppingList = document.getElementById('shoppingList');
+                        const cartItemCount = document.getElementById('cartItemCount');
+                        const cartTotal = document.getElementById('cartTotal');
+                        const totalItems = document.querySelector('.total-items');
+
+                        shoppingList.innerHTML = '';
+                        let total = 0;
+                        let itemCount = 0;
+
+                        data.forEach(item => {
+                            const formattedPrice = formatVND(item.cardType.unitPrice); // Use formatVND function
+                            const formattedTotal = formatVND(item.total); // Use formatVND function
+                            const li = document.createElement('li');
+                            li.innerHTML = `
+                                <div class="content">
+                                    <span class="product-name">${item.cardType.publisher.name} - ${formattedPrice}</span> 
+                                    <p class="quantity">${item.quantity}x - <span class="amount">${formattedTotal}</span></p>
+                                </div>
+                                <a href="javascript:void(0)" class="remove" title="Remove this item" onclick="removeFromCart(${item.id})">
+                                    <i class="lni lni-close"></i>
+                                </a>
+                            `;
+                            shoppingList.appendChild(li);
+                            total += item.total;
+                            itemCount += item.quantity;
+                        });
+
+                        cartItemCount.textContent = `${itemCount} Items`;
+                        cartTotal.textContent = `${formatVND(total)}`; // Use formatVND function here as well
+                        totalItems.textContent = itemCount;
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            // Custom VND Formatting Function (add this outside updateCart)
+            function formatVND(value) {
+                return value.toLocaleString('de-DE', { minimumFractionDigits: 0 }) + " VND";
+            }
+
+            // Update cart on page load
+            updateCart();
+
+            // Set up an interval to update the cart every 30 seconds
+            setInterval(updateCart, 30000);
+
+            // Show/hide dropdown on hover
+            const cartDropdown = document.querySelector('.navbar-cart');
+            cartDropdown.addEventListener('mouseenter', function () {
+                shoppingItem.classList.add('show');
+                updateCart(); // Update cart when dropdown is shown
+            });
+            cartDropdown.addEventListener('mouseleave', function () {
+                shoppingItem.classList.remove('show');
+            });
+
+            window.removeFromCart = function (itemId) {
+                fetch(`/cart/remove/${itemId}`, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            updateCart();
+                        } else {
+                            console.error('Failed to remove item from cart');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        });
+    </script>
+
+</html>

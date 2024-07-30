@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Thêm nhà phát hành thẻ</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}"/>
+
+</head>
+
+<body>
+<div class="container-scroller d-flex">
+    <!-- partial:../../partials/_sidebar.html -->
+
+    <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:./partials/_navbar.html -->
+        <div th:insert="../templates/pages/navbar.html"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto rounded border p-4 m-4">
+                    <h2 class="text-center md-5">Nhà phát hành mới</h2>
+
+                    <form id="formID" method="post" enctype="multipart/form-data" th:object=${publisherDto}>
+                        <div class=row mb-3>
+                            <label class="col-sm-4 col-form-label">Tên</label>
+                            <div class="col-sm-8">
+                                <input id="name" class="form-control" th:field="${publisherDto.name}">
+                                <p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger"
+                                   th:errors="${publisherDto.name}"></p>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label">Ảnh</label>
+                            <div class="col-sm-8">
+                                <input id="image" class="form-control" type="file" th:field="${publisherDto.image}">
+                                <p th:if="${#fields.hasErrors('image')}" th:errorclass="text-danger"
+                                   th:errors="${publisherDto.image}"></p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="offset-sm-4 col-sm-4 d-grid">
+                                <button type="submit" class="btn btn-primary">Tạo mới</button>
+                            </div>
+                            <div class="col-sm-4 d-grid">
+                                <a class="btn btn-outline-primary" href="/publisher" role="button">Hủy</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-sm-flex justify-content-center justify-content-sm-between py-2">
+                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a
+                                href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com </a>2021</span>
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a
+                                href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a> templates</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- partial -->
+    </div>
+</div>
+
+<!-- base:js -->
+<script th:src="@{../admin/vendors/js/vendor.bundle.base.js}"></script>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<script src="../admin/js/jquery.cookie.js" type="text/javascript"></script>
+<!-- End plugin js for this page-->
+<!-- inject:js -->
+<script src="../admin/js/off-canvas.js"></script>
+<script src="../admin/js/hoverable-collapse.js"></script>
+<script src="../admin/js/template.js"></script>
+<script>
+    function submitForm(event,formID){
+        let name = document.getElementById('name').value;
+        let image = document.getElementById('image').value;
+        if(name == ''){
+            window.alert('Name publisher is required');
+            event.preventDefault();
+            return;
+        }
+        if(image == ''){
+            window.alert('Image is required');
+            event.preventDefault();
+            return;
+        }
+
+        var form = document.getElementById(formID);
+        form.submit();
+    }
+</script>
+</body>
+
+</html>

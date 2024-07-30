@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Thông tin tài khoản chi tiết</title>
+    <!-- base:css -->
+    <link rel="stylesheet" th:href="@{../admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{../admin/vendors/css/vendor.bundle.base.css}">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" th:href="@{../admin/css/style.css}">
+    <!-- endinject -->
+    <link rel="shortcut icon" th:href="@{../admin/images/favicon.png}"/>
+</head>
+
+<body>
+<div class="container-scroller d-flex">
+    <!-- partial:../../partials/_sidebar.html -->
+    <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper" style="margin-left: 16%">
+        <!-- partial:./partials/_navbar.html -->
+        <div th:insert="../templates/pages/navbar.html"></div>
+        <div class="account-login section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+                        <div class="register-form">
+                            <h1 style="text-align: center;" class="title"><strong>Thông tin chi tiết thẻ</strong></h1>
+                            <!--missing id of form-->
+                            <form id="form-create" class="row" method="post" action="/cardAdmin/update"
+                                  th:object="${cardDto}">
+
+                                <!--                                    CardID-->
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="id" class="required">ID</label>
+                                        <input th:value="*{id}" class="form-control" type="text" id="id"
+                                               name="id" readonly>
+                                    </div>
+                                </div>
+                                <!--                                    CardType-->
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        <label for="cardTypeId" class="required">Loại thẻ</label>
+                                        <select th:value="*{cardTypeId}" class="form-control" id="cardTypeId"
+                                                name="cardTypeId" required th:readonly="*{isDeleted}?true:false">
+                                            <option th:each="ct : ${listCT}"
+                                                    th:value="${ct.id}"
+                                                    th:text="${ct.publisher.name} + ' ' + ${ct.unitPrice}"
+                                                    th:selected="${ct.id == CTId}"
+                                                    th:style="${ct.id == CTId} ? 'color: red;' : ''">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--                                    SeriNumber-->
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="seriNumber">Số seri</label>
+                                        <input th:value="*{seriNumber}" class="form-control" type="text" id="seriNumber"
+                                               name="seriNumber" th:readonly="*{isDeleted}?true:false">
+                                    </div>
+                                </div>
+                                <!--                                    CardNumber-->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="cardNumber" class="required">Mã thẻ</label>
+                                        <input th:value="*{cardNumber}" class="form-control" type="text"
+                                               id="cardNumber" name="cardNumber" th:readonly="*{isDeleted}?true:false">
+                                    </div>
+                                </div>
+                                <!--                                    ExpiryDate-->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="expiryDate">Ngày hết hạn</label>
+                                        <input th:value="*{expiryDate}" class="form-control" type="date" id="expiryDate"
+                                               name="expiryDate" th:readonly="*{isDeleted}?true:false">
+                                    </div>
+                                </div>
+                                <!--                                    Is Delete-->
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="isDelete">Trạng thái</label>
+                                        <input th:value="*{isDeleted}? 'Deleted':'Active'" class="form-control"
+                                               type="text" id="isDelete"
+                                               name="isDelete" readonly>
+                                    </div>
+                                </div>
+                                <!--                                    Delete Date-->
+                                <div class="col-sm-4" th:if="${deletedDate != null}">
+                                    <div class="form-group">
+                                        <label for="deleteDate">Ngày xóa</label>
+                                        <input th:value="*{deletedDate}" class="form-control" type="date"
+                                               id="deleteDate"
+                                               name="deleteDate" readonly>
+                                    </div>
+                                </div>
+                                <!--                                    Delete By-->
+                                <div class="col-sm-4" th:if="${deletedBy != null}">
+                                    <div class="form-group">
+                                        <label for="deleteBy">Xóa bởi</label>
+                                        <input th:value="*{deletedBy}" class="form-control" type="text"
+                                               id="deleteBy"
+                                               name="deleteBy" readonly>
+                                    </div>
+                                </div>
+                                <!--                                    Create date-->
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="createdDate">Ngày tạo</label>
+                                        <input th:value="*{createdDate}" class="form-control" type="text"
+                                               id="createdDate"
+                                               name="createdDate" readonly>
+                                    </div>
+                                </div>
+                                <!--                                    Create By-->
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="createdBy">Tạo bởi</label>
+                                        <input th:value="*{createdBy}" class="form-control" type="text"
+                                               id="createdBy"
+                                               name="createdBy" readonly>
+                                    </div>
+                                </div>
+                                <!--                                    LastUpdateAt-->
+                                <div class="col-sm-4" th:if="${updatedBy != null}">
+                                    <div class="form-group">
+                                        <label for="lastUpdated">Cập nhật gần nhất</label>
+                                        <input th:value="*{lastUpdated}" class="form-control" type="date"
+                                               id="lastUpdated"
+                                               name="lastUpdated" readonly>
+                                    </div>
+                                </div>
+                                <!--                                    LastUpdatedBy-->
+                                <div class="col-sm-4" th:if="${updatedBy != null}">
+                                    <div class=" form-group">
+                                        <label for="updatedBy">Cập nhật cuối bởi</label>
+                                        <input th:value="*{updatedBy}" class="form-control" type="text"
+                                               id="updatedBy"
+                                               name="updatedBy" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="button">
+                                    <button class="btn btn-outline-primary" th:onclick="submitForm('form-create')"
+                                            type="button">Cập nhật
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endinject -->
+<!-- Plugin js for this page-->
+<script src="../admin/js/hoverable-collapse.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the select element
+        const selectElement = document.getElementById("cardTypeId");
+
+        // Get the selected option
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+
+        // Change the text color of the selected option to red
+        selectedOption.style.color = "red";
+    });
+</script>
+<script>
+    function submitForm(formId) {
+        let isDeleted = document.getElementById("isDelete").value;
+        if (isDeleted == 'Deleted') {
+            window.alert('Thẻ đã bị xóa không thể cập nhật');
+            return;
+        }
+        let seriNumber = document.getElementById("seriNumber").value;
+        let cardNumber = document.getElementById("cardNumber").value;
+        let cardType = document.getElementById("cardTypeId").value;
+        let expiryDate = document.getElementById("expiryDate").value;
+
+        if (seriNumber == '') {
+            window.alert('seriNumber is required');
+            return;
+        }
+        if (cardNumber == '') {
+            window.alert('seriNumber is required');
+            return;
+        }
+
+        if (cardType == '') {
+            window.alert('cardType is required');
+            return;
+        }
+
+        if (expiryDate == '') {
+            window.alert('expiryDate is required');
+            return;
+        }
+
+        let currentDate = new Date();
+        let expiredDate = new Date(expiryDate);
+        if (expiredDate <= currentDate) {
+            window.alert('expiryDate is not valid');
+            return;
+        }
+
+        var form = document.getElementById(formId);
+        form.submit();
+    }
+</script>
+</body>
+
+</html>

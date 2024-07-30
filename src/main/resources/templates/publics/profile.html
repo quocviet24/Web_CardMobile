@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<title>Thông tin tài khoản</title>
+	<meta name="description" content="" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.svg" />
+
+	<!-- ========================= CSS here ========================= -->
+	<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/LineIcons.3.0.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/tiny-slider.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/glightbox.min.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+
+</head>
+
+<body>
+	<!-- Preloader -->
+	<div class="preloader">
+		<div class="preloader-inner">
+			<div class="preloader-icon">
+				<span></span> <span></span>
+			</div>
+		</div>
+	</div>
+	<!-- /End Preloader -->
+
+	<!-- Start Header Area -->
+	<header th:insert="../templates/publics/header.html"></header>
+	<!-- End Header Area -->
+
+	<!-- Start Breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-lg-6 col-md-6 col-12">
+					<div class="breadcrumbs-content">
+						<h1 class="page-title">Thông tin tài khoản</h1>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-12">
+					<ul class="breadcrumb-nav">
+						<li><a href="/"><i class="lni lni-home"></i>
+								Trang chủ</a></li>
+						<li>Thông tin tài khoản</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End Breadcrumbs -->
+
+	<!-- Start Account Login Area -->
+	<div class="account-login section">
+		<div class="container">
+
+			<div th:if="${emailChangeRequested}" class="success-container">
+				<div class="alert alert-info">Vui lòng kiểm tra email mới của bạn để xác nhận thay đổi địa chỉ mail.</div>
+			</div>
+			<div th:if="${passwordChanged}" class="success-container">
+				<div class="alert alert-info">Mật khẩu của bạn đã được đổi thành công!</div>
+			</div>
+			<div th:if="${emailSent}" class="success-container">
+				<div class="alert alert-info">Chúng tôi đã gửi một link xác thực đến email bạn muốn thay đổi. Vui lòng vào mail để kích hoạt email mới.</div>
+			</div>
+			<div th:if="${emailChanged}" class="success-container">
+				<div class="alert alert-info">Email của bạn đã thay đổi thành công!</div>
+			</div>
+			<div th:if="${resetTokenExpired}" class="danger-container">
+				<div class="alert alert-danger">Link xác thực đã hết hạn!</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+					<form class="card login-form" method="get">
+						<div class="row card-body">
+							<div class="title">
+								<h3>Thông tin tài khoản</h3>
+								<p>Đây là thông tin về bạn.</p>
+							</div>
+							<div class="col-md-6 form-group">
+								<label for="name">Tên</label> <input readonly class="form-control" type="text"
+									id="name" th:attr="value=${session.user_sess.firstName}">
+							</div>
+							<div class="col-md-6 form-group">
+								<label for="email">Họ</label> <input readonly class="form-control" type="email"
+									id="email" th:attr="value=${session.user_sess.lastName}">
+							</div>
+							<div class="col-md-6 form-group">
+								<label for="phone">Số điện thoại</label> <input readonly class="form-control" type="text"
+									id="phone" th:attr="value=${session.user_sess.phone}">
+							</div>
+							<div class="col-md-6 form-group">
+								<label for="phone">Tên đăng nhập</label> <input readonly class="form-control" type="text"
+									th:attr="value=${session.user_sess.username}">
+							</div>
+                            <div class="form-group">
+                                <label >Email</label> <input readonly class="form-control" type="text"
+                                    th:attr="value=${session.user_sess.email}">
+                            </div>
+						</div>
+						<div class="row">
+							<div class="button col-sm-6">
+								<a style="margin-top: 10px" class="btn btn-primary text-center"
+									th:href="@{/changepassword}">Đổi mật khẩu</a></button>
+							</div>
+							<div class="button col-sm-6"><a style="margin-top: 10px" class="btn btn-primary text-center"
+									th:href="@{/profile/update}">Cập nhật thông tin</a></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End Account Login Area -->
+	<footer class="footer" th:insert="publics/footer.html"></footer>
+	<!-- ========================= scroll-top ========================= -->
+	<a href="#" class="scroll-top"> <i class="lni lni-chevron-up"></i>
+	</a>
+
+	<!-- ========================= JS here ========================= -->
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/tiny-slider.js"></script>
+	<script src="assets/js/glightbox.min.js"></script>
+	<script src="assets/js/main.js"></script>
+</body>
+
+</html>

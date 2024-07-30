@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Order Details</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.svg" />
+
+    <!-- ========================= CSS here ========================= -->
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/LineIcons.3.0.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/tiny-slider.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/glightbox.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+</head>
+
+<body>
+    <!-- Start Header Area -->
+    <header th:insert="../templates/publics/header.html"></header>
+    <!-- End Header Area -->
+
+    <!-- Start Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="breadcrumbs-content">
+                        <h1 class="page-title">Chi tiết đơn hàng</h1>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12">
+                    <ul class="breadcrumb-nav">
+                        <li><a href="/"><i class="lni lni-home"></i>Trang chủ</a></li>
+                        <li><a href="/order">Danh sách đơn hàng</a></li>
+                        <li>Chi tiết đơn hàng</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumbs -->
+
+    <!-- Start Order Details Area -->
+    <div class="order-details section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12 col-12">
+                    <div class="order-details-content">
+                        <div class="title mb-4">
+                            <h3>Chi tiết đơn hàng</h3>
+                        </div>
+                        <div>
+                            <table th:if="${order.status == 'Completed'}" class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col">Số Seri</th>
+                                        <th scope="col">Mã Thẻ</th>
+                                        <th scope="col">Nhà Phát Hành</th>
+                                        <th scope="col">Mệnh Giá</th>
+                                        <th scope="col">Hạn sử dụng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="detail : ${orderDetails}">
+                                        <td th:text="${detail.seriNumber}"></td>
+                                        <td th:text="${detail.cardNumber}"></td>
+                                        <td th:text="${detail.publisherName}"></td>
+                                        <td th:text="${detail.unitPrice}"></td>
+                                        <td th:text="${detail.expiryDate}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table th:if="${order.status != 'Completed'}" class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col">Nhà Phát Hành</th>
+                                        <th scope="col">Mệnh Giá</th>
+                                        <th scope="col">Số lượng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="entry : ${cardTypeMap.entrySet()}">
+                                        <td th:text="${entry.key.publisher.name}"></td>
+                                        <td th:text="${#numbers.formatDecimal(entry.key.unitPrice, 1, 'POINT', 0, 'COMMA')} + ' VND'"></td>
+                                        <td th:text="${entry.value}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="mt-4">
+                                <a href="/order" class="btn btn-secondary">Quay lại xem các đơn hàng</a>
+                            </div>
+                            <div th:if="${order.status == 'Completed'}" class="mt-4">
+                                <h3>Hướng dẫn sử dụng thẻ cào</h3>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Các bước sử dụng:</h5>
+                                        <ol class="mb-4">
+                                            <li>- Cào nhẹ lớp phủ bạc để lộ mã thẻ và số seri.</li>
+                                            <li>- Truy cập trang web hoặc ứng dụng của nhà cung cấp dịch vụ (ví dụ: game, điện thoại, ...).</li>
+                                            <li>- Tìm tùy chọn nạp thẻ hoặc thanh toán.</li>
+                                            <li>- Nhập chính xác mã thẻ và số seri từ thẻ cào của bạn.</li>
+                                            <li>- Xác nhận và làm theo hướng dẫn để hoàn tất quá trình nạp thẻ.</li>
+                                        </ol>
+                                        
+                                        <h5 class="card-title">Lưu ý quan trọng:</h5>
+                                        <ul class="list-group list-group-flush">
+                                            <li style="color:red" class="list-group-item">Thẻ chỉ có thể sử dụng 1 lần duy nhất.</li>
+                                            <li class="list-group-item">Giữ thẻ cào cẩn thận, tránh làm mất hoặc hư hỏng lớp phủ bạc.</li>
+                                            <li class="list-group-item">Kiểm tra kỹ thông tin nhà cung cấp và mệnh giá trước khi nạp thẻ.</li>
+                                            <li class="list-group-item">Nếu gặp vấn đề, liên hệ ngay với bộ phận hỗ trợ khách hàng của nhà cung cấp.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Order Details Area -->
+    <footer class="footer" th:insert="publics/footer.html"></footer>
+
+    <!-- ========================= scroll-top ========================= -->
+    <a href="#" class="scroll-top"><i class="lni lni-chevron-up"></i></a>
+
+    <!-- ========================= JS here ========================= -->
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/tiny-slider.js"></script>
+    <script src="assets/js/glightbox.min.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

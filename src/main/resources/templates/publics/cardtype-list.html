@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Shop List - ShopGrids Bootstrap 5 eCommerce HTML Template.</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.svg" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&amp;display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/solid.css">
+
+    <!-- ========================= CSS here ========================= -->
+
+    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/LineIcons.3.0.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/tiny-slider.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/glightbox.min.css}" />
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}" />
+<!--    cartbtn style-->
+    <style>
+        .add-to-cart {
+            background: #fff;
+            --background-scale: 1;
+            --text-o: 1;
+            --text-x: 12px;
+            --cart-x: -48px;
+            --cart-y: 0px;
+            --cart-rotate: 0deg;
+            --cart-scale: .75;
+            --cart-clip: 0px;
+            --cart-clip-x: 0px;
+            --cart-tick-offset: 10px;
+            --cart-tick-color: #00fffc;
+            --shirt-y: -16px;
+            --shirt-scale: 0;
+            --shirt-color: #17171B;
+            --shirt-logo: #fff;
+            --shirt-second-y: 24px;
+            --shirt-second-color: #fff;
+            --shirt-second-logo: #17171B;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-appearance: none;
+            outline: none;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            width: 164px;
+            margin: 0;
+            cursor: pointer;
+            position: relative;
+            font-family: inherit;
+        }
+
+        .add-to-cart:before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            border-radius: 5px;
+            transition: background 0.25s;
+            background: var(--background,
+            var(--background-default));
+            transform: scaleX(var(--background-scale)) translateZ(0);
+        }
+
+        .add-to-cart:hover {
+            --background: var(--background-hover);
+            --text-color: #fff;
+            --cart: #fff;
+        }
+
+        .add-to-cart span {
+            display: block;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 24px;
+            color: var(--text-color);
+            opacity: var(--text-o);
+            transform: translateX(var(--text-x)) translateZ(0);
+        }
+
+        .add-to-cart svg {
+            display: block;
+            width: var(--svg-width, 24px);
+            height: var(--svg-height, 24px);
+            position: var(--svg-position, relative);
+            left: var(--svg-left, 0);
+            top: var(--svg-top, 0);
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .add-to-cart svg path {
+            fill: var(--svg-fill, none);
+            stroke: var(--svg-stroke, none);
+            stroke-width: var(--svg-stroke-width, 2);
+        }
+
+        .add-to-cart .morph {
+            --svg-width: 64px;
+            --svg-height: 13px;
+            --svg-left: 50%;
+            --svg-top: -12px;
+            --svg-position: absolute;
+            --svg-fill: var(--background, var(--background-default));
+            transition: fill 0.25s;
+            pointer-events: none;
+            margin-left: -32px;
+        }
+
+        .add-to-cart .shirt,
+        .add-to-cart .cart {
+            pointer-events: none;
+            position: absolute;
+            left: 50%;
+        }
+
+        .add-to-cart .shirt {
+            margin: -12px 0 0 -12px;
+            top: 0;
+            transform-origin: 50% 100%;
+            transform: translateY(var(--shirt-y)) scale(var(--shirt-scale));
+        }
+
+        .add-to-cart .shirt svg {
+            --svg-fill: var(--shirt-color);
+        }
+
+        .add-to-cart .shirt svg g {
+            --svg-fill: var(--svg-g-fill, var(--shirt-logo));
+        }
+
+        .add-to-cart .shirt svg.second {
+            --svg-fill: var(--shirt-second-color);
+            --svg-g-fill: var(--shirt-second-logo);
+            --svg-position: absolute;
+            -webkit-clip-path: polygon(0 var(--shirt-second-y), 24px var(--shirt-second-y), 24px 24px, 0 24px);
+            clip-path: polygon(0 var(--shirt-second-y), 24px var(--shirt-second-y), 24px 24px, 0 24px);
+        }
+
+        .add-to-cart .cart {
+            --svg-width: 36px;
+            --svg-height: 26px;
+            --svg-stroke: var(--cart);
+            top: 10px;
+            margin-left: -18px;
+            transform: translate(var(--cart-x), var(--cart-y)) rotate(var(--cart-rotate)) scale(var(--cart-scale)) translateZ(0);
+        }
+
+        .add-to-cart .cart:before {
+            content: "";
+            display: block;
+            width: 22px;
+            height: 12px;
+            position: absolute;
+            left: 7px;
+            top: 7px;
+            background: var(--cart);
+            -webkit-clip-path: polygon(0 0, 22px 0, calc(22px - var(--cart-clip-x)) var(--cart-clip), var(--cart-clip-x) var(--cart-clip));
+            clip-path: polygon(0 0, 22px 0, calc(22px - var(--cart-clip-x)) var(--cart-clip), var(--cart-clip-x) var(--cart-clip));
+        }
+
+        .add-to-cart .cart path.wheel {
+            --svg-stroke-width: 1.5;
+        }
+
+        .add-to-cart .cart path.tick {
+            --svg-stroke: var(--cart-tick-color);
+            stroke-dasharray: 10px;
+            stroke-dashoffset: var(--cart-tick-offset);
+        }
+
+         .add-to-cart {
+            --text-color: #000;
+            --cart: #000;
+            --cart-tick-color: #00fffc;
+            --shirt-color: #fff;
+            --shirt-logo: #17171B;
+            --shirt-second-color: #17171B;
+            --shirt-second-logo: #fff;
+        }
+    </style>
+    <style>
+        .provider-list,
+        .second-provider-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            /* Increased gap between buttons */
+            margin-top: 20px;
+        }
+
+        .provider-list li,
+        .second-provider-list li {
+            display: inline-block;
+        }
+
+        .provider-list img {
+            width: 120px;
+            height: 60px;
+            margin: 10px;
+            padding: 10px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            /* Add transition for fade effect */
+        }
+
+        .second-provider-list span {
+            padding: 10px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .provider-list img:hover,
+        .second-provider-list span:hover {
+            opacity: 0.8;
+        }
+
+        .info-data,
+        .service {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-check {
+            display: none;
+        }
+
+        h3 {
+            font-size: 170%;
+        }
+
+        .icon{
+            font-size: 20px;
+            visibility: hidden;
+            position: absolute;
+            color: #80808042;
+            font-weight: 600;
+        }
+
+        .btn-check:checked~.icon{
+            color: #00bbff;
+            visibility: visible;
+        }
+
+        .btn-check:checked+img {
+            border-color:#00bbff;
+            border-radius: 5px;
+        }
+
+        .btn-check:checked+span {
+            border-color:#00bbff;
+            border-radius: 5px;
+        }
+
+        .ratio-unit{
+            border: 2px solid #80808042;
+            border-radius: 5px;
+            transition: transform 0.5s !important;
+        }
+
+        .ratio-unit:hover{
+            transform: scale(1.2);
+        }
+
+        .check-unit{
+            position: relative;
+        }
+
+        .publisher .icon{
+            top: 8px;
+            right: 12px;
+        }
+
+        .money .icon{
+            bottom: 16px;
+            right: 2px;
+        }
+
+        .title{
+            margin-bottom: 15px;
+        }
+
+        .image{
+            margin-bottom: 25px;
+        }
+
+
+    </style>
+
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-icon">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+    <!-- /End Preloader -->
+
+    <!-- Start Header Area -->
+    <header th:insert="publics/header.html"></header>
+    <!-- End Header Area -->
+
+    <!-- Start Breadcrumbs -->
+    <div class="breadcrumbs">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="breadcrumbs-content">
+                        <h1 class="page-title">Products</h1>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12">
+                    <ul class="breadcrumb-nav">
+                        <li><a href="/"><i class="lni lni-home"></i> Home</a></li>
+                        <li><a href="/">Shop</a></li>
+                        <li>Products</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Breadcrumbs -->
+
+    <!-- Start Product Grids -->
+    <section class="item-details section">
+        <div class="container">
+            <div class="top-area">
+                <div class="align-items-center">
+                    <div class="service supplier">
+                        <form style="text-align: center;" id="search-form" action="/product" method="post">
+                            <h3 class="title">Chọn loại thẻ</h3>
+                            <ul class="provider-list">
+                                <div class="image">
+                                    <li th:each="publisher : ${publishers}" class="active">
+                                        <label class="check-unit publisher">
+                                            <input class="btn-check" type="radio" name="publisherId"
+                                                th:value="${publisher.id}"
+                                                th:checked="${publisher.id==publisherId?true:false}">
+                                            <img class="ratio-unit" th:src="@{'/images/' + ${publisher.image}}" th:alt="${publisher.name}">
+                                            <i class="uis uis-check-circle icon"></i>
+                                        </label>
+                                    </li>
+                                </div>
+                            </ul>
+                            <h3 class="title">Chọn mệnh giá</h3>
+                            <div class="row">
+                                <div class="second-section">
+                                    <ul class="second-provider-list">
+                                        <li th:each="money : ${moneys}">
+                                            <label class="check-unit money">
+                                                <input class="btn-check" type="radio" name="moneyId"
+                                                    th:value="${money.id}" th:checked="${money.id==moneyId?true:false}">
+                                                <span class="ratio-unit" th:text="${#numbers.formatDecimal(money.unitFund, 1, 'POINT', 0, 'COMMA')}"></span>
+                                                <i class="uis uis-check-circle icon"></i>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <br>
+                            <button type="button" onclick="search()" class="btn-sm btn btn-primary">Tìm kiếm</button>
+                        </form>
+                        <span style="color: red;" th:text="${error}"></span>
+                        <span style="color:#007bff;" th:text="${message}"></span>
+                        <div th:if="${cardType!=null}" class="row mt-4 quantity-section">
+                            <div class="col-md-12">
+                                <form id="item-form" style="line-height: 30px">
+                                    <h3 class="title">Thông tin sản phẩm</h3>
+                                    <div>Số lượng trong kho: <span th:text="${cardType.inStock}"></span></div>
+                                    <input type="hidden" name="cardTypeId" th:value="${cardType.id}">
+<!--                                    <div>Số lượng đã bán: <span th:text="${cardType.soldQuantity}"></span> </div>-->
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Số lượng</span>
+                                        </div>
+                                        <input type="number" name="quantity" id="quantityInput" class="form-control"
+                                            value="1" min="1" th:max="${cardType.inStock}" data-bs-toggle="tooltip"
+                                            title="">
+                                    </div>
+                                    <br>
+                                    <div class="mt-2 mt-md-0">
+<!--                                        <button type="button" onclick="delayedAddToCart()" class="btn btn-primary mr-2">Thêm-->
+<!--                                            vào giỏ-->
+<!--                                            hàng</button>-->
+                                        <button class="add-to-cart btn btn-primary mr-2" onclick="delayedAddToCart()">
+                                            <span>Thêm vào giỏ</span>
+                                            <svg class="morph" viewBox="0 0 64 13">
+                                                <path d="M0 12C6 12 17 12 32 12C47.9024 12 58 12 64 12V13H0V12Z" />
+                                            </svg>
+<!--                                            <div class="shirt">-->
+
+<!--                                                &lt;!&ndash; Old code &ndash;&gt;-->
+<!--                                                <svg class="first" viewBox="0 0 24 24">-->
+
+<!--                                                    <path-->
+<!--                                                            d="M4.99997 3L8.99997 1.5C8.99997 1.5 10.6901 3 12 3C13.3098 3 15 1.5 15 1.5L19 3L22.5 8L19.5 10.5L19 9.5L17.1781 18.6093C17.062 19.1901 16.778 19.7249 16.3351 20.1181C15.4265 20.925 13.7133 22.3147 12 23C10.2868 22.3147 8.57355 20.925 7.66487 20.1181C7.22198 19.7249 6.93798 19.1901 6.82183 18.6093L4.99997 9.5L4.5 10.5L1.5 8L4.99997 3Z" />-->
+<!--                                                    <g>-->
+<!--                                                        <path d="M16.3516 9.65383H14.3484V7.83652H14.1742V9.8269H16.5258V7.83652H16.3516V9.65383Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M14.5225 6.01934V7.66357H14.6967V7.4905H14.8186V7.66357H14.9928V6.01934H14.8186V7.31742H14.6967V6.01934H14.5225Z" />-->
+<!--                                                        <path d="M14.1742 5.67319V7.66357H14.3484V5.84627H16.3516V7.66357H16.5258V5.67319H14.1742Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M15.707 9.48071H15.8812V9.28084L16.0032 9.4807V9.48071H16.1774V7.83648H16.0032V9.14683L15.8812 8.94697V7.83648H15.707V9.48071Z" />-->
+<!--                                                        <path d="M15.5852 6.01931H15.1149V6.19238H15.5852V6.01931Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M15.707 6.01934V7.66357H15.8812V7.46371L16.0032 7.66357H16.1774V6.01934H16.0032V7.32969L15.8812 7.12984V6.01934H15.707Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M15.411 7.31742H15.2891V6.53857H15.411V7.31742ZM15.1149 7.66357H15.2891V7.4905H15.411V7.66357H15.5852V6.3655H15.1149V7.66357Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M14.5225 8.69756L14.8186 9.18291V9.30763H14.6967V9.13455H14.5225V9.48071H14.9928V9.13456V9.13455L14.6967 8.64917V8.00956H14.8186V8.6586H14.9928V7.83648H14.5225V8.69756Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M15.411 9.30763H15.2891V8.00956H15.411V9.30763ZM15.1149 9.48071H15.5852V7.83648H15.1149V9.48071Z" />-->
+<!--                                                    </g>-->
+<!--                                                </svg>-->
+<!--                                                <svg class="second" viewBox="0 0 24 24">-->
+<!--                                                    <path-->
+<!--                                                            d="M4.99997 3L8.99997 1.5C8.99997 1.5 10.6901 3 12 3C13.3098 3 15 1.5 15 1.5L19 3L22.5 8L19.5 10.5L19 9.5L17.1781 18.6093C17.062 19.1901 16.778 19.7249 16.3351 20.1181C15.4265 20.925 13.7133 22.3147 12 23C10.2868 22.3147 8.57355 20.925 7.66487 20.1181C7.22198 19.7249 6.93798 19.1901 6.82183 18.6093L4.99997 9.5L4.5 10.5L1.5 8L4.99997 3Z" />-->
+<!--                                                    <g>-->
+<!--                                                        <path d="M16.3516 9.65383H14.3484V7.83652H14.1742V9.8269H16.5258V7.83652H16.3516V9.65383Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M14.5225 6.01934V7.66357H14.6967V7.4905H14.8186V7.66357H14.9928V6.01934H14.8186V7.31742H14.6967V6.01934H14.5225Z" />-->
+<!--                                                        <path d="M14.1742 5.67319V7.66357H14.3484V5.84627H16.3516V7.66357H16.5258V5.67319H14.1742Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M15.707 9.48071H15.8812V9.28084L16.0032 9.4807V9.48071H16.1774V7.83648H16.0032V9.14683L15.8812 8.94697V7.83648H15.707V9.48071Z" />-->
+<!--                                                        <path d="M15.5852 6.01931H15.1149V6.19238H15.5852V6.01931Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M15.707 6.01934V7.66357H15.8812V7.46371L16.0032 7.66357H16.1774V6.01934H16.0032V7.32969L15.8812 7.12984V6.01934H15.707Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M15.411 7.31742H15.2891V6.53857H15.411V7.31742ZM15.1149 7.66357H15.2891V7.4905H15.411V7.66357H15.5852V6.3655H15.1149V7.66357Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M14.5225 8.69756L14.8186 9.18291V9.30763H14.6967V9.13455H14.5225V9.48071H14.9928V9.13456V9.13455L14.6967 8.64917V8.00956H14.8186V8.6586H14.9928V7.83648H14.5225V8.69756Z" />-->
+<!--                                                        <path-->
+<!--                                                                d="M15.411 9.30763H15.2891V8.00956H15.411V9.30763ZM15.1149 9.48071H15.5852V7.83648H15.1149V9.48071Z" />-->
+<!--                                                    </g>-->
+<!--                                                </svg>-->
+<!--                                            </div>-->
+
+                                            <div class="cart">
+                                                <svg viewBox="0 0 36 26">
+                                                    <path d="M1 2.5H6L10 18.5H25.5L28.5 7.5L7.5 7.5" class="shape" />
+                                                    <path
+                                                            d="M11.5 25C12.6046 25 13.5 24.1046 13.5 23C13.5 21.8954 12.6046 21 11.5 21C10.3954 21 9.5 21.8954 9.5 23C9.5 24.1046 10.3954 25 11.5 25Z"
+                                                            class="wheel" />
+                                                    <path
+                                                            d="M24 25C25.1046 25 26 24.1046 26 23C26 21.8954 25.1046 21 24 21C22.8954 21 22 21.8954 22 23C22 24.1046 22.8954 25 24 25Z"
+                                                            class="wheel" />
+                                                    <path d="M14.5 13.5L16.5 15.5L21.5 10.5" class="tick" />
+                                                </svg>
+                                            </div>
+                                        </button>
+
+                                        <button type="button" onclick="checkout()"  class="btn btn-success">Thanh toán</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- End Product Grids -->
+
+    <!-- Start Footer Area -->
+    <footer class="footer" th:insert="publics/footer.html">
+
+    </footer>
+    <!--/ End Footer Area -->
+
+    <!-- ========================= scroll-top ========================= -->
+    <a href="#" class="scroll-top">
+        <i class="lni lni-chevron-up"></i>
+    </a>
+
+    <!-- ========================= JS here ========================= -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.0/gsap.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin3.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/tiny-slider.js"></script>
+    <script src="assets/js/glightbox.min.js"></script>
+    <script src="assets/js/main.js"></script>
+<!--    <script src=assets/js/cartBtn.js"></script>-->
+    <script>
+        function delayedAddToCart() {
+            setTimeout(addToCart, 1800);
+        }
+        function addToCart() {
+            var form = document.getElementById('item-form');
+            form.setAttribute('action', '/cart/add');
+            form.setAttribute('method', 'get');
+            form.submit();
+        }
+        function checkout() {
+            var form = document.getElementById('item-form');
+            form.setAttribute('action', '/order/checkout');
+            form.setAttribute('method', 'get');
+            form.submit();
+        }
+        function search() {
+            var publisherRadios = document.getElementsByName('publisherId');
+            var moneyRadios = document.getElementsByName('moneyId');
+            var publisherChecked = Array.from(publisherRadios).some(radio => radio.checked);
+            var moneyChecked = Array.from(moneyRadios).some(radio => radio.checked);
+            if (!publisherChecked) {
+                alert('Vui lòng chọn nhà cung cấp.');
+                return;
+            }
+            if (!moneyChecked) {
+                alert('Vui lòng chọn mệnh giá.');
+                return;
+            }
+            if (publisherChecked && moneyChecked) {
+                document.getElementById('search-form').submit();
+            }
+        }
+    </script>
+<!--    Cart btn-->
+    <script>
+        gsap.registerPlugin(MorphSVGPlugin)
+
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            let morph = button.querySelector('.morph path'),
+                shirt = button.querySelectorAll('.shirt svg > path')
+            button.addEventListener('pointerdown', e => {
+                if (button.classList.contains('active')) {
+                    return
+                }
+                gsap.to(button, {
+                    '--background-scale': .97,
+                    duration: .15
+                })
+            })
+            button.addEventListener('click', e => {
+                e.preventDefault()
+                if (button.classList.contains('active')) {
+                    return
+                }
+                button.classList.add('active')
+                gsap.to(button, {
+                    keyframes: [{
+                        '--background-scale': .97,
+                        duration: .15
+                    }, {
+                        '--background-scale': 1,
+                        delay: .125,
+                        duration: 1.2,
+                        ease: 'elastic.out(1, .6)'
+                    }]
+                })
+                gsap.to(button, {
+                    keyframes: [{
+                        '--shirt-scale': 1,
+                        '--shirt-y': '-42px',
+                        '--cart-x': '0px',
+                        '--cart-scale': 1,
+                        duration: .4,
+                        ease: 'power1.in'
+                    }, {
+                        '--shirt-y': '-40px',
+                        duration: .3
+                    }, {
+                        '--shirt-y': '16px',
+                        '--shirt-scale': .9,
+                        duration: .25,
+                        ease: 'none'
+                    }, {
+                        '--shirt-scale': 0,
+                        duration: .3,
+                        ease: 'none'
+                    }]
+                })
+                gsap.to(button, {
+                    '--shirt-second-y': '0px',
+                    delay: .835,
+                    duration: .12
+                })
+                gsap.to(button, {
+                    keyframes: [{
+                        '--cart-clip': '12px',
+                        '--cart-clip-x': '3px',
+                        delay: .9,
+                        duration: .06
+                    }, {
+                        '--cart-y': '2px',
+                        duration: .1
+                    }, {
+                        '--cart-tick-offset': '0px',
+                        '--cart-y': '0px',
+                        duration: .2,
+                        onComplete() {
+                            button.style.overflow = 'hidden'
+                        }
+                    }, {
+                        '--cart-x': '52px',
+                        '--cart-rotate': '-15deg',
+                        duration: .2
+                    }, {
+                        '--cart-x': '104px',
+                        '--cart-rotate': '0deg',
+                        duration: .2,
+                        clearProps: true,
+                        onComplete() {
+                            button.style.overflow = 'hidden'
+                            button.style.setProperty('--text-o', 0)
+                            button.style.setProperty('--text-x', '0px')
+                            button.style.setProperty('--cart-x', '-104px')
+                        }
+                    }, {
+                        '--text-o': 1,
+                        '--text-x': '12px',
+                        '--cart-x': '-48px',
+                        '--cart-scale': .75,
+                        duration: .25,
+                        clearProps: true,
+                        onComplete() {
+                            button.classList.remove('active')
+                        }
+                    }]
+                })
+                gsap.to(button, {
+                    keyframes: [{
+                        '--text-o': 0,
+                        duration: .3
+                    }]
+                })
+                gsap.to(morph, {
+                    keyframes: [{
+                        morphSVG: 'M0 12C6 12 20 10 32 0C43.9024 9.99999 58 12 64 12V13H0V12Z',
+                        duration: .25,
+                        ease: 'power1.out'
+                    }, {
+                        morphSVG: 'M0 12C6 12 17 12 32 12C47.9024 12 58 12 64 12V13H0V12Z',
+                        duration: .15,
+                        ease: 'none'
+                    }]
+                })
+                gsap.to(shirt, {
+                    keyframes: [{
+                        morphSVG: 'M4.99997 3L8.99997 1.5C8.99997 1.5 10.6901 3 12 3C13.3098 3 15 1.5 15 1.5L19 3L23.5 8L20.5 11L19 9.5L18 22.5C18 22.5 14 21.5 12 21.5C10 21.5 5.99997 22.5 5.99997 22.5L4.99997 9.5L3.5 11L0.5 8L4.99997 3Z',
+                        duration: .25,
+                        delay: .25
+                    }, {
+                        morphSVG: 'M4.99997 3L8.99997 1.5C8.99997 1.5 10.6901 3 12 3C13.3098 3 15 1.5 15 1.5L19 3L23.5 8L20.5 11L19 9.5L18.5 22.5C18.5 22.5 13.5 22.5 12 22.5C10.5 22.5 5.5 22.5 5.5 22.5L4.99997 9.5L3.5 11L0.5 8L4.99997 3Z',
+                        duration: .85,
+                        ease: 'elastic.out(1, .5)'
+                    }, {
+                        morphSVG: 'M4.99997 3L8.99997 1.5C8.99997 1.5 10.6901 3 12 3C13.3098 3 15 1.5 15 1.5L19 3L22.5 8L19.5 10.5L19 9.5L17.1781 18.6093C17.062 19.1901 16.778 19.7249 16.3351 20.1181C15.4265 20.925 13.7133 22.3147 12 23C10.2868 22.3147 8.57355 20.925 7.66487 20.1181C7.22198 19.7249 6.93798 19.1901 6.82183 18.6093L4.99997 9.5L4.5 10.5L1.5 8L4.99997 3Z',
+                        duration: 0,
+                        delay: 1.25
+                    }]
+                })
+            })
+        })
+
+    </script>
+</body>
+
+</html>

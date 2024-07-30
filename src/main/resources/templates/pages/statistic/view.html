@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ShopGrids Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{admin/vendors/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{admin/vendors/css/vendor.bundle.base.css}">
+    <link rel="stylesheet" th:href="@{admin/css/style.css}" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.svg" />
+    <style>
+        body {
+            /* font-family: 'Roboto', sans-serif; */
+            background-color: #f4f7fc;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            width: 100%;
+        }
+
+        .form-select {
+            border-radius: 20px;
+            padding: 10px 15px;
+        }
+
+        .stat-card {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-scroller d-flex">
+        <div class="offcanvas offcanvas-start" id="sidebarOffcanvas" th:insert="../templates/pages/sidebar.html"></div>
+
+        <div class="container-fluid">
+
+            <div th:insert="../templates/pages/navbar.html"></div>
+
+            <!-- Main content -->
+            <div class="container">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard</h1>
+                    <!-- Add any top-bar elements here -->
+                </div>
+
+                <div class="row">
+                    <!-- Orders Chart -->
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h2 class="card-title mb-4">Orders per Week</h2>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <!-- <h5 class="text-muted">Avg 1.33 orders per day</h5> -->
+                                    <!-- <div>
+                                            <input type="date" id="startDate" class="form-control d-inline-block w-auto">
+                                            <input type="date" id="endDate" class="form-control d-inline-block w-auto">
+                                            <button onclick="filterOrders()" class="btn btn-primary">Filter</button>
+                                        </div> -->
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="ordersByDayChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Revenue Chart -->
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h2 class="card-title mb-4">Revenue by Month</h2>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <!-- <h5 class="text-muted">Avg Revenue: 185,721.23 VND</h5> -->
+                                    <form th:action="@{/statistic/revenueByYear}" method="get" class="d-inline-block">
+                                        <select id="yearSelect" name="year" class="form-select"
+                                            onchange="this.form.submit()">
+                                            <option value="" selected disabled>Choose a year</option>
+                                        </select>
+                                    </form>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="totalMoneyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Users Chart -->
+                    <div class="col-12 mb-4">
+                        <div class="card mx-auto">
+                            <div class="card-body">
+                                <h2 class="card-title mb-4">Top User Statistics</h2>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="text-muted">Avg Spend: <span id="averageTotalMoney">0,000,00 VND</span>
+                                    </h5>
+                                    <select id="dateRange" class="form-select w-auto" onchange="handleDateRange()">
+                                        <option value="0">All Time</option>
+                                        <option value="1">By Week</option>
+                                        <option value="2">By Month</option>
+                                        <option value="3">By Year</option>
+                                    </select>
+                                </div>
+                                <div class="chart-container" style="display: flex; justify-content: center; align-items: center;">
+                                    <canvas id="userChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- content-wrapper ends -->
+            <footer class="footer">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-sm-flex justify-content-center justify-content-sm-between py-2">
+                            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © <a
+                                    href="https://www.bootstrapdash.com/" target="_blank">bootstrapdash.com
+                                </a>2021</span>
+                            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Only the best <a
+                                    href="https://www.bootstrapdash.com/" target="_blank"> Bootstrap dashboard </a>
+                                templates</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- main-panel ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="admin/vendors/js/vendor.bundle.base.js"></script>
+    <script src="admin/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="admin/js/off-canvas.js"></script>
+    <script src="admin/js/hoverable-collapse.js"></script>
+    <script src="admin/js/template.js"></script>
+    <script src="admin/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="admin/js/dashboard.js"></script>
+
+<!--Total revenue by month-->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Fetch the total money data passed from the controller
+    let totalMoneyData = /*[[${totalMoney}]]*/ [];
+
+        // Sort the data by month if necessary
+        let combinedData = totalMoneyData.map(data => ({ month: data.month, totalMoney: data.totalMoney }));
+        combinedData.sort((a, b) => a.month - b.month);
+
+    // Extract sorted months and values
+    let months = combinedData.map(data => data.month);
+    let totalMoneyValues = combinedData.map(data => data.totalMoney);
+
+    // Create the chart
+    var ctx = document.getElementById('totalMoneyChart').getContext('2d');
+    var totalMoneyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Total Money by Month',
+                data: totalMoneyValues,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value, index, values) {
+                            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+                        }
+                    }
+                },
+                x: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return 'Total Money: $' + new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tooltipItem.raw);
+                        }
+                    }
+                }
+            }
+        }
+    });
+    /*]]>*/
+</script>
+
+<!--Order in a week scriptJs-->
+<script th:inline="javascript">
+    var ordersByDay = /*[[${ordersByDay}]]*/ [];
+
+        var labels = ordersByDay.map(function (entry) {
+            return new Date(entry.day).toLocaleDateString(); // Format date as needed
+        });
+
+        var data = ordersByDay.map(function (entry) {
+            return entry.numberOfOrder;
+        });
+
+        var ctx = document.getElementById('ordersByDayChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Number of Orders',
+                    data: data,
+                    backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                    borderColor: 'rgba(255, 0, 0, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+    <!--Top user scriptJs-->
+    <script th:inline="javascript">
+
+        window.onload = function () {
+            // Your function call here
+            handleDateRange();
+            getYear();
+        };
+
+        var userChart;
+
+        var getYear = () => {
+            const currentYear = new Date().getFullYear();
+            const startYear = 2024; // Change to your required start year
+            const yearSelect = document.getElementById('yearSelect');
+            const selectedYear = /*[[${year}]]*/ '2024';
+
+            for (let year = startYear; year <= currentYear; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                if (year === selectedYear) {
+                    option.selected = true;
+                }
+                yearSelect.appendChild(option);
+            }
+        }
+
+        var handleDateRange = () => {
+            var select = document.getElementById('dateRange');
+            var selectValue = select.value;
+            console.log("selectValue = " + selectValue);
+            var top10Users;
+            switch (selectValue) {
+                case '0':
+                    top10Users = /*[[${top10user}]]*/[];
+                    var backgroundColor = 'rgba(54, 162, 235, 0.2)';
+                    var borderColor = 'rgba(54, 162, 235, 1)';
+                    getUserStat(top10Users, backgroundColor, borderColor);
+
+                    break;
+                case '1':
+                    var backgroundColor = 'rgba(252, 140, 3, 0.2)';
+                    var borderColor = 'rgba(252, 140, 3, 1)';
+                    top10Users = /*[[${top10userOfWeek}]]*/[];
+                    getUserStat(top10Users, backgroundColor, borderColor);
+                    break;
+                case '2':
+                    var backgroundColor = 'rgba(94, 255, 0, 0.2)';
+                    var borderColor = 'rgba(94, 255, 0, 1)';
+                    top10Users = /*[[${top10userOfMonth}]]*/[];
+                    getUserStat(top10Users, backgroundColor, borderColor);
+                    break;
+                case '3':
+                    var backgroundColor = 'rgba(255, 0, 0, 0.2)';
+                    var borderColor = 'rgba(255, 0, 0, 1)';
+                    top10Users = /*[[${top10userOfYear}]]*/[];
+                    getUserStat(top10Users, backgroundColor, borderColor);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        var getUserStat = (top10Users, backgroundColor, borderColor) => {
+            var ctx = document.getElementById('userChart').getContext('2d');
+
+            var usernames = top10Users.map(function (user) {
+                return user.username;
+            });
+
+            var totalMoneyValues = top10Users.map(function (user) {
+                return user.totalMoney;
+            });
+
+            var totalSum = data.reduce(function (sum, value) {
+                return sum + value;
+            }, 0);
+            var averageTotalMoney = totalSum / data.length;
+            var formattedAverage = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(averageTotalMoney);
+            document.getElementById('averageTotalMoney').innerText = formattedAverage;
+
+            if (window.userChart instanceof Chart) {
+                window.userChart.destroy();
+            }
+
+            var chartData = {
+                labels: usernames,
+                datasets: [{
+                    label: 'Total Money',
+                    backgroundColor: backgroundColor,
+                    borderColor: borderColor,
+                    borderWidth: 1,
+                    data: totalMoneyValues,
+                }]
+            };
+
+            var chartOptions = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function (value, index, values) {
+                                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+                            }
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }]
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                            return 'Total Money: ' + new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+                        }
+                    }
+                }
+            };
+
+
+            userChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: chartOptions
+            });
+        }
+    </script>
+
+</body>
+
+</html>
